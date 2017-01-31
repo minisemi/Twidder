@@ -11,33 +11,35 @@
         </div>
 
         <div class="rightBox">
-            <form>
-                <div class="form">Email: <input type="text" name="email"></div>
-                <div class="form">Password: <input type = "text" name= "password"></div>
+            <form onsubmit="login()">
+                <div class="form">Email: <input type="email" name="email" id=loginemail required pattern=".+@.+" title="Correct email format" autocomplete="on"></div>
+                <div class="form">Password: <input type = "password" name= "password" id=loginpassword minLength=5 required autocomplete="on"></div>
+            <div class=form>Login<input type=submit id="loginButton"></div>
             </form>
-            <button>login</button>
+
 
         </div>
         <div class="bottomBox rightBox">
             <p>Sign up here</p>
-            <form>
-                <div class="form">First name: <input type="text" name="firstname"></div>
-                <div class="form">Family name: <input type = "text" name= "familyname"></div>
+            <form onsubmit="signUp()">
+                <div class="form">First name: <input type="text" name="firstname" id="firstname" required></div>
+                <div class="form">Family name: <input type = "text" name= "familyname" id=familyname required></div>
                 <div class="form">Gender:
                     <select name = "gender" id="gender">
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                     </select></div>
-                <div class="form">City: <input type = "text" name= "city"></div>
-                <div class="form">Country: <input type = "text" name= "country"></div>
-                <div class="form">Email: <input type = "text" name= "email"></div>
-                <div class="form">Password: <input type = "text" name= "password"></div>
-                <div class="form">Repeat PSW: <input type = "text" name= "repeatpsw"></div>
+                <div class="form">City: <input type = "text" name= "city" id=city required></div>
+                <div class="form">Country: <input type = "text" name= "country" id=country required></div>
+                <div class="form">Email: <input type = "email" name= "email" id=email required pattern=".+@.+" title="Correct email format"></div>
+                <div class="form">Password: <input type = "password" name= "password" id=password minLength=5 required></div>
+                <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw minLength=5 required></div>
 
+            <div class="form">SignUp<input type=submit id="signupButton"></div>
             </form>
 
-            <button>SignUp</button>
+
 
 
         </div>
@@ -45,12 +47,33 @@
 
     </script>
         <script type=”text/view” id="profile">
+        <div class="mainDiv_profile">
+        <button onclick="logout()">Logout</button>
+        </div>
+<ul class="tab">
+  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Home')">Home</a></li>
+  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Browse')">Browse</a></li>
+  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Account')">Account</a></li>
+</ul>
 
-HIOADOHASDUHOSAGOHUSDGOHSDGIOHSAGHIOSGOIHÖSGADIOHÖADSGOHIASGIOHSG
+<div id="Home" class="tabcontent">
+  <h3>Home</h3>
+  <p>London is the capital city of England.</p>
+</div>
 
+<div id="Browse" class="tabcontent">
+  <h3>Browse</h3>
+  <p>Paris is the capital of France.</p>
+</div>
+
+<div id="Account" class="tabcontent">
+  <h3>Account</h3>
+  <p>Tokyo is the capital of Japan.</p>
+</div>
 
         </script>
     </head>
     <body>
+    <div id="currentView"></div>
     </body>
 </html>
