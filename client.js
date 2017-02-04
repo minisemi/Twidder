@@ -2,13 +2,20 @@ window.onload = function () {
     if (sessionStorage.token == undefined){
         return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
-        return document.getElementById("currentView").innerHTML = document.getElementById("profile").innerHTML
+       // var currentView = document.getElementById("currentView").innerHTML
 
+        //document.getElementById("Home").innerHTML
+        //currentView = document.getElementById("profile").innerHTML
+
+        return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
     }
 }
 
 function logout(){
+    serverstub.signOut(sessionStorage.token)
     sessionStorage.removeItem("token")
+    sessionStorage.removeItem("email")
+    sessionStorage.removeItem("currentTab")
     location.reload()
 }
 
@@ -17,7 +24,7 @@ function login() {
     var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
         if (serverMessage.success == true) {
             alert(serverMessage.message)
-            checkForToken(serverMessage.data)
+            checkForToken(serverMessage.data, document.getElementById("loginemail").value)
         } else {
             alert(serverMessage.message)
         }
@@ -31,8 +38,6 @@ function signUp() {
     if(document.getElementById("password").value!=document.getElementById("repeatpsw").value){
         alert("Not matching password")
         proceed = false
-
-        //måste skriva ut att pw inte är lika
     }
 
     var select = document.getElementById("gender")
@@ -62,9 +67,11 @@ function signUp() {
     }
 }
 
-function checkForToken(token){
+function checkForToken(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
+        sessionStorage.setItem("email", email)
+        sessionStorage.setItem("currentTab", "Home")
         location.reload()
     } else {
         alert("Browser doesn't support web storage")
@@ -90,4 +97,47 @@ function openTab(tabName) {
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
+
+}
+
+function changePassword() {
+    var oldpw =document.getElementById("changePasswordOld").value
+    var newpw=document.getElementById("changePasswordNew").value
+    if (newpw!=oldpw){
+        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw)
+        alert(serverMessage.message)
+    } else {
+        alert("Not a new password")
+    }
+    //openTab("Account")
+}
+
+function displayUserData(){
+    var serverMessage=serverstub.getUserDataByToken(sessionStorage.token)
+    document.getElementById("userfirstname").innerHTML=serverMessage.data.firstname
+    document.getElementById("userfamilyname").innerHTML=serverMessage.data.familyname
+    document.getElementById("useremail").innerHTML=serverMessage.data.email
+    document.getElementById("usergender").innerHTML=serverMessage.data.gender
+    document.getElementById("usercountry").innerHTML=serverMessage.data.country
+    document.getElementById("usercity").innerHTML=serverMessage.data.city
+}
+
+function postMessage() {
+    var message = document.getElementById("message").value
+    var serverMessage=serverstub.postMessage(sessionStorage.token,message,sessionStorage.email)
+    loadMessages()
+
+}
+
+function loadMessages() {
+    var messages = serverstub.getUserMessagesByToken(sessionStorage.token)
+    var messageBoard = document.getElementById("messageBoard")
+
+    for(var i=0;i<messages.data.length;i++) {
+        var textArea = document.createElement("textarea")
+        var text = messages.data[i].content
+        var textNode = document.createTextNode(text)
+        textArea.appendChild(textNode)
+        messageBoard.appendChild(textArea)
+    }
 }

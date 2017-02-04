@@ -48,17 +48,35 @@
     </script>
         <script type=”text/view” id="profile">
         <div class="mainDiv_profile">
-        <button onclick="logout()">Logout</button>
+
         </div>
-<ul class="tab">
-  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Home')">Home</a></li>
+        <ul class="tab">
+  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Home');displayUserData();loadMessages()">Home</a></li>
   <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Browse')">Browse</a></li>
   <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Account')">Account</a></li>
 </ul>
 
 <div id="Home" class="tabcontent">
   <h3>Home</h3>
-  <p>London is the capital city of England.</p>
+  <div class=userDataBox>
+  <div class="form">First name: <p id="userfirstname" ></p></div>
+                <div class="form">Family name: <p id=userfamilyname></p></div>
+                <div class="form">Gender: <p id=usergender ></p></div>
+                <div class="form">City: <p id=usercity ></p></div>
+                <div class="form">Country: <p id=usercountry ></p></div>
+                <div class="form">Email: <p id=useremail ></p></div>
+    </div>
+    <div class=postMessage>
+    <form>
+
+    <textarea rows="10" cols="50" id=message></textarea>
+    <button onclick=postMessage()></button>
+    </form>
+    </div>
+    <div class = messageBoard>
+        <ul id=messageBoard>
+        </ul>
+    </div>
 </div>
 
 <div id="Browse" class="tabcontent">
@@ -68,8 +86,14 @@
 
 <div id="Account" class="tabcontent">
   <h3>Account</h3>
-  <p>Tokyo is the capital of Japan.</p>
+  <form>
+  <div class="form">Old pw<input type="password" id="changePasswordOld" minLength=5 required></div>
+  <div class="form">New pw<input type="password" id="changePasswordNew" minLength=5 required></div>
+  <button onclick=changePassword()>Change pw</button>
+  </form>
+  <button onclick="logout()">Logout</button>
 </div>
+
 
         </script>
     </head>
