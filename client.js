@@ -2,20 +2,15 @@ window.onload = function () {
     if (sessionStorage.token == undefined){
         return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
-       // var currentView = document.getElementById("currentView").innerHTML
-
-        //document.getElementById("Home").innerHTML
-        //currentView = document.getElementById("profile").innerHTML
-
         return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
     }
 }
+
 
 function logout(){
     serverstub.signOut(sessionStorage.token)
     sessionStorage.removeItem("token")
     sessionStorage.removeItem("email")
-    sessionStorage.removeItem("currentTab")
     location.reload()
 }
 
@@ -28,7 +23,6 @@ function login() {
         } else {
             alert(serverMessage.message)
         }
-
 }
 
 function signUp() {
@@ -41,6 +35,7 @@ function signUp() {
     }
 
     var select = document.getElementById("gender")
+
     if (proceed) {
         var email = document.getElementById("email").value
         var password = document.getElementById("password").value
@@ -71,7 +66,6 @@ function checkForToken(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
-        sessionStorage.setItem("currentTab", "Home")
         location.reload()
     } else {
         alert("Browser doesn't support web storage")
@@ -79,22 +73,17 @@ function checkForToken(token, email){
 }
 
 function openTab(tabName) {
-    // Declare all variables
     var i, tabcontent, tablinks;
-
-    // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
+
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
-
-    // Get all elements with class="tablinks" and remove the class "active"
     tablinks = document.getElementsByClassName("tablinks");
+
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-
-    // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
 
@@ -109,7 +98,6 @@ function changePassword() {
     } else {
         alert("Not a new password")
     }
-    //openTab("Account")
 }
 
 function displayUserData(){
@@ -122,22 +110,63 @@ function displayUserData(){
     document.getElementById("usercity").innerHTML=serverMessage.data.city
 }
 
-function postMessage() {
-    var message = document.getElementById("message").value
-    var serverMessage=serverstub.postMessage(sessionStorage.token,message,sessionStorage.email)
-    loadMessages()
-
+function postMessage(message, email, messageBoard) {
+    var message = document.getElementById(message).value
+    var serverMessage=serverstub.postMessage(sessionStorage.token,message,email)
+    var messageBoard = document.getElementById(messageBoard)
+    var textArea = document.createElement("textarea")
+    var textNode = document.createTextNode(message)
+    textArea.appendChild(textNode)
+    messageBoard.insertBefore(textArea, messageBoard.firstChild);
 }
 
-function loadMessages() {
-    var messages = serverstub.getUserMessagesByToken(sessionStorage.token)
-    var messageBoard = document.getElementById("messageBoard")
+function refreshMessages(email, messageBoard) {
+    var messages = serverstub.getUserMessagesByEmail(sessionStorage.token, email)
+    var messageBoard = document.getElementById(messageBoard)
+    if (messages.data.length>messageBoard.childElementCount){
+        while (messageBoard.firstChild) {
+            messageBoard.removeChild(messageBoard.firstChild);
+        }
 
-    for(var i=0;i<messages.data.length;i++) {
-        var textArea = document.createElement("textarea")
-        var text = messages.data[i].content
-        var textNode = document.createTextNode(text)
-        textArea.appendChild(textNode)
-        messageBoard.appendChild(textArea)
+        for (var i = 0; i < messages.data.length; i++) {
+            var textArea = document.createElement("textarea")
+            var text = messages.data[i].content
+            var textNode = document.createTextNode(text)
+            textArea.appendChild(textNode)
+            messageBoard.appendChild(textArea)
+        }
+    }
+}
+
+function searchForUser() {
+
+    var searchEmail = document.getElementById("searchEmail").value
+    var serverMessage=serverstub.getUserDataByEmail(sessionStorage.token, searchEmail)
+    if (serverMessage.success == true) {
+
+        document.getElementById("searchResults").style.visibility="visible"
+        document.getElementById("searchfirstname").innerHTML = serverMessage.data.firstname
+        document.getElementById("searchfamilyname").innerHTML = serverMessage.data.familyname
+        document.getElementById("searchemail").innerHTML = serverMessage.data.email
+        document.getElementById("searchgender").innerHTML = serverMessage.data.gender
+        document.getElementById("searchcountry").innerHTML = serverMessage.data.country
+        document.getElementById("searchcity").innerHTML = serverMessage.data.city
+
+        var messages = serverstub.getUserMessagesByEmail(sessionStorage.token, searchEmail)
+        var messageBoard = document.getElementById("searchmessageBoard")
+
+        while (messageBoard.firstChild) {
+            messageBoard.removeChild(messageBoard.firstChild);
+        }
+
+        for (var i = 0; i < messages.data.length; i++) {
+            var textArea = document.createElement("textarea")
+            var text = messages.data[i].content
+            var textNode = document.createTextNode(text)
+            textArea.appendChild(textNode)
+            messageBoard.appendChild(textArea)
+        }
+    } else {
+        alert(serverMessage.message)
     }
 }
