@@ -35,8 +35,8 @@
                 <div class="form">City: <input type = "text" name= "city" id=city required></div>
                 <div class="form">Country: <input type = "text" name= "country" id=country required></div>
                 <div class="form">Email: <input type="email" name="email" id=email required  title="Correct email format"></div>
-                <div class="form">Password: <input type = "password" name= "password" id=password minLength=5 required></div>
-                <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw minLength=5 required></div>
+                <div class="form">Password: <input type = "password" name= "password" id=password pattern=".{5,}" title="Min 5 characters" required></div>
+                <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw pattern=".{5,}" title="Min 5 characters" required></div>
 
             <div class="form">SignUp<input type=submit id="signupButton">SignUp</div>
             </form>
