@@ -11,6 +11,7 @@ body{
 }
 
 .leftBox{
+    border: 1px solid black;
     width: 340px;
     height: inherit;
     background-color: aliceblue;
@@ -50,6 +51,7 @@ textarea{
 
 
 .rightBox{
+    border: 1px solid black;
     float: right;
     background-color: white;
     height: 100px;
@@ -60,7 +62,7 @@ textarea{
 }
 .bottomBox{
     height: 290px;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .form{
@@ -122,8 +124,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 .tabcontent {
     display: none;
     padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
+    border: 0;
     -webkit-animation: fadeEffect 1s;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
     height: 40%
