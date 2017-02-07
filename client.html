@@ -21,7 +21,7 @@
 
 
         </div>
-        <div class="bottomBox rightBox">
+        <div class="bottomBox rightBox" onsubmit="signUp();return false">
             <p>Sign up here</p>
             <form >
                 <div class="form">First name: <input type="text" name="firstname" id="firstname" required></div>
@@ -38,7 +38,7 @@
                 <div class="form">Password: <input type = "password" name= "password" id=password minLength=5 required></div>
                 <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw minLength=5 required></div>
 
-            <div class="form">SignUp<button type=submit id="signupButton" onclick="signUp();return false">SignUp</button></div>
+            <div class="form">SignUp<input type=submit id="signupButton">SignUp</div>
             </form>
         </div>
         <p id=error></p>
