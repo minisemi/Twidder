@@ -15,22 +15,23 @@ function logout(){
 }
 
 function login() {
-
+    var error = document.getElementById("error")
     var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
         if (serverMessage.success == true) {
-            alert(serverMessage.message)
             checkForToken(serverMessage.data, document.getElementById("loginemail").value)
         } else {
-            alert(serverMessage.message)
+            error.innerHTML = serverMessage.message
         }
 }
 
 function signUp() {
 
     var proceed = true
+    var error = document.getElementById("error")
+
 
     if(document.getElementById("password").value!=document.getElementById("repeatpsw").value){
-        alert("Not matching password")
+        error.innerHTML = serverMessage.message
         proceed = false
     }
 
@@ -55,9 +56,9 @@ function signUp() {
         }
         var serverMessage = serverstub.signUp(user)
         if (serverMessage.success == true) {
-            alert(serverMessage.message)
+            error.innerHTML = serverMessage.message
         } else {
-            alert(serverMessage.message)
+            error.innerHTML = serverMessage.message
         }
     }
 }
@@ -68,7 +69,7 @@ function checkForToken(token, email){
         sessionStorage.setItem("email", email)
         location.reload()
     } else {
-        alert("Browser doesn't support web storage")
+      //  alert("Browser doesn't support web storage")
     }
 }
 
@@ -90,13 +91,18 @@ function openTab(tabName) {
 }
 
 function changePassword() {
+    var pwText = document.getElementById("passwordText")
     var oldpw =document.getElementById("changePasswordOld").value
     var newpw=document.getElementById("changePasswordNew").value
     if (newpw!=oldpw){
         var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw)
-        alert(serverMessage.message)
+        if(serverMessage.success==true){
+        pwText.innerHTML="Password successfully changed"
+        } else{
+            pwText.innerHTML="Wrong password"
+        }
     } else {
-        alert("Not a new password")
+        pwText.innerHTML="New password same as old"
     }
 }
 
@@ -115,6 +121,8 @@ function postMessage(message, email, messageBoard) {
     var serverMessage=serverstub.postMessage(sessionStorage.token,message,email)
     var messageBoard = document.getElementById(messageBoard)
     var textArea = document.createElement("textarea")
+    textArea.setAttribute("readonly","readonly")
+
     var textNode = document.createTextNode(message)
     textArea.appendChild(textNode)
     messageBoard.insertBefore(textArea, messageBoard.firstChild);
@@ -130,6 +138,8 @@ function refreshMessages(email, messageBoard) {
 
         for (var i = 0; i < messages.data.length; i++) {
             var textArea = document.createElement("textarea")
+            textArea.setAttribute("readonly","readonly")
+
             var text = messages.data[i].content
             var textNode = document.createTextNode(text)
             textArea.appendChild(textNode)
@@ -151,22 +161,9 @@ function searchForUser() {
         document.getElementById("searchgender").innerHTML = serverMessage.data.gender
         document.getElementById("searchcountry").innerHTML = serverMessage.data.country
         document.getElementById("searchcity").innerHTML = serverMessage.data.city
+        refreshMessages(searchEmail,"searchmessageBoard")
 
-        var messages = serverstub.getUserMessagesByEmail(sessionStorage.token, searchEmail)
-        var messageBoard = document.getElementById("searchmessageBoard")
-
-        while (messageBoard.firstChild) {
-            messageBoard.removeChild(messageBoard.firstChild);
-        }
-
-        for (var i = 0; i < messages.data.length; i++) {
-            var textArea = document.createElement("textarea")
-            var text = messages.data[i].content
-            var textNode = document.createTextNode(text)
-            textArea.appendChild(textNode)
-            messageBoard.appendChild(textArea)
-        }
     } else {
-        alert(serverMessage.message)
+      //  alert(serverMessage.message)
     }
 }
