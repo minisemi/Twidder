@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
        <link href="client.css" type="text/css" rel="stylesheet">
@@ -32,11 +33,11 @@
                     </select></div>
                 <div class="form">City: <input type = "text" name= "city" id=city required></div>
                 <div class="form">Country: <input type = "text" name= "country" id=country required></div>
-                <div class="form">Email: <input type = "email" name= "email" id=email required pattern=".+@.+" title="Correct email format"></div>
+                <div class="form">Email: <input type="email" name="email" id=email required  title="Correct email format"></div>
                 <div class="form">Password: <input type = "password" name= "password" id=password minLength=5 required></div>
                 <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw minLength=5 required></div>
 
-            <div class="form">SignUp<Button type=submit id="signupButton" onclick="signUp();return false"></button></div>
+            <div class="form">SignUp<button type=submit id="signupButton" onclick="signUp();return false">SignUp</button></div>
             </form>
         </div>
         <p id=error></p>
@@ -54,7 +55,7 @@
   <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Account')">Account</a></li>
 </ul>
 
-<div id="Home" class="tabcontent" style.display=block >
+<div id="Home" class="tabcontent"  >
   <h3>Home</h3>
 
   <div class=userDataBox>

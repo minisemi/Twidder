@@ -1,4 +1,8 @@
 window.onload = function () {
+    displayView()
+}
+
+function displayView() {
     if (sessionStorage.token == undefined){
         return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
@@ -11,7 +15,7 @@ function logout(){
     serverstub.signOut(sessionStorage.token)
     sessionStorage.removeItem("token")
     sessionStorage.removeItem("email")
-    location.reload()
+    displayView()
 }
 
 function login() {
@@ -67,7 +71,7 @@ function checkForToken(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
-        location.reload()
+        displayView()
     } else {
       //  alert("Browser doesn't support web storage")
     }
