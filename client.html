@@ -13,7 +13,7 @@
 
         <div class="rightBox">
             <form >
-                <div class="form">Email: <input type="email" name="email" id=loginemail required pattern=".+@.+" title="Correct email format" autocomplete="on"></div>
+                <div class="form">Email: <input type="email" name="email" id=loginemail required title="Correct email format" autocomplete="on"></div>
                 <div class="form">Password: <input type = "password" name= "password" id=loginpassword minLength=5 required autocomplete="on"></div>
             <div class=form>Login<button id="loginButton" onclick="login();return false">Login</button></div>
             </form>
@@ -118,8 +118,9 @@
   <h3>Account</h3>
   <form>
   <div class="form">Old pw<input type="password" id="changePasswordOld" minLength=5 required></div>
-  <div class="form">New pw<input type="password" id="changePasswordNew" minLength=5 required></div>
-  <button onclick="changePassword();return false">Change pw</button>
+  <div class="form">New pw<input type="password" id="changePasswordNew1" minLength=5 required></div>
+  <div class="form">Repeat new pw<input type="password" id="changePasswordNew2" minLength=5 required></div>
+  <button onclick="changePassword()">Change pw</button>
   </form>
   <p id=passwordText></p>
   <button onclick="logout()">Logout</button>

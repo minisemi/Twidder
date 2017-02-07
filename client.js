@@ -35,7 +35,7 @@ function signUp() {
 
 
     if(document.getElementById("password").value!=document.getElementById("repeatpsw").value){
-        error.innerHTML = serverMessage.message
+        error.innerHTML = "Repeat password failed"
         proceed = false
     }
 
@@ -97,9 +97,15 @@ function openTab(tabName) {
 function changePassword() {
     var pwText = document.getElementById("passwordText")
     var oldpw =document.getElementById("changePasswordOld").value
-    var newpw=document.getElementById("changePasswordNew").value
-    if (newpw!=oldpw){
-        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw)
+    var newpw1=document.getElementById("changePasswordNew1").value
+    var newpw2=document.getElementById("changePasswordNew2").value
+    if(newpw1!=newpw2){
+        pwText.innerHTML = "Repeat password failed"
+        return false
+    }
+
+    if (newpw1!=oldpw){
+        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw1)
         if(serverMessage.success==true){
         pwText.innerHTML="Password successfully changed"
         } else{
@@ -108,6 +114,7 @@ function changePassword() {
     } else {
         pwText.innerHTML="New password same as old"
     }
+    return false
 }
 
 function displayUserData(){
