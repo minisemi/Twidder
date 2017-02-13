@@ -1,0 +1,27 @@
+CREATE TABLE Users(
+   email varchar(255),
+   firstName varchar(255) NOT NULL,
+   familyName varchar(255) NOT NULL,
+   password varchar(255) NOT NULL,
+   gender varchar(255) NOT NULL,
+   city varchar(255) NOT NULL,
+   country varchar(255) NOT NULL,
+   PRIMARY KEY( email )
+);
+
+CREATE TABLE Posts(
+    receiver varchar(255) NOT NULL,
+    sender varchar(255),
+    message varchar(255),
+    time datetime UNIQUE,
+    PRIMARY KEY(sender, time),
+    FOREIGN KEY (receiver, sender) REFERENCES Users(email, email)
+);
+
+CREATE TABLE ActiveUsers(
+    user varchar(255),
+    token varchar(255) UNIQUE,
+    PRIMARY KEY(user),
+    FOREIGN KEY(user) REFERENCES Users(email)
+);
+

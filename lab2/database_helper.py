@@ -1,5 +1,7 @@
 import sqlite3
 from flask import Flask
+from flask import g
+
 
 class Database_helper(object):
 
@@ -8,6 +10,15 @@ class Database_helper(object):
     DATABASE = '/lab2/database.db'
 
     app = Flask(__name__)
+
+    def findUser(self):
+        return
+
+    def remove_user(self):
+        return
+
+    def create_post(self):
+        return
 
     def init_db(self):
         with Database_helper.app.app_context():
