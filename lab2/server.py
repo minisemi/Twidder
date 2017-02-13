@@ -1,12 +1,13 @@
 from flask import Flask
+from lab2.database_helper import Database_helper
+
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def hello_world():
+    db = Database_helper()
     return 'Hello World!'
-
 
 if __name__ == '__main__':
     app.run()
