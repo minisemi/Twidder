@@ -1,21 +1,20 @@
 from flask import Flask
-from lab2.database_helper import Database_helper
+import database_helper
 
 
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
-    db = Database_helper()
+def hello_world(self):
     return 'Hello World!'
 
 if __name__ == '__main__':
     app.run()
 
-
-def sign_in(email, password):
-
-    return 0
+@app.route('/sign_in')
+def sign_in(self, email, password):
+    user = database_helper.find_user(email)
+    return "Signed in"
 
 
 def sign_up(email, password, firstname, familyname, gender, city, country):
