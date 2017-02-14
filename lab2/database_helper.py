@@ -14,7 +14,9 @@ class Database_helper(object):
     def findUser(self):
         return
 
-    def remove_user(self):
+    def remove_user(self, email):
+        query = "IF  EXISTS (SELECT * FROM database.Users WHERE email=?) DELETE FROM database.Users WHERE email=?"
+        self.query_db(self, query, [email], one=True)
         return
 
     def create_post(self):

@@ -5,8 +5,8 @@ from lab2.database_helper import Database_helper
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
-    db = Database_helper()
+def hello_world(self):
+    self.db = Database_helper()
     return 'Hello World!'
 
 if __name__ == '__main__':
@@ -19,7 +19,10 @@ def sign_in(email, password):
 
 
 def sign_up(email, password, firstname, familyname, gender, city, country):
-    return 0
+    query = "INSERT INTO database.Users VALUES (?,?,?,?,?,?,?)"
+
+
+    return
 
 
 def sign_out(token):
