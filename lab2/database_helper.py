@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask
 from flask import g
+import json
 
 DATABASE = '/lab2/database.db'
 
