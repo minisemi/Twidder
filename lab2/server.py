@@ -1,5 +1,6 @@
 from flask import Flask, request
 import database_helper
+import json
 
 app = Flask(__name__)
 
@@ -9,10 +10,14 @@ def hello_world():
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
-    user = request.form['email']
+    email = request.form['email']
     password = request.form['password']
-    # user = database_helper.find_user(email)
-    return user + " : " + password
+    user = database_helper.find_user(email)
+    #return user + " : " + password
+    if user is None:
+        return return_message(False, "No such user", user)
+    else:
+        return return_message(True, "Najs", user)
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
@@ -85,6 +90,16 @@ def post_message(token, message, email):
     message = request.form['message']
     email = request.form['email']
     return 0
+
+def return_message (success, message, data):
+    d = {
+        'success': success,
+        '"message': message,
+        #'data': ['BDFL', 'Developer'],
+        'data': data,
+    }
+    #json_string = '{"success": "Guido", "message":"Rossum", "data":}'
+    return json.dumps(d)
 
 if __name__ == '__main__':
     with app.app_context():
