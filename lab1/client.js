@@ -58,6 +58,9 @@ function signUp() {
             city: city,
             country: country
         }
+        // TODO: Useful in lab 3
+        // data = FormData();
+        // data.append("email", email)
         var serverMessage = serverstub.signUp(user)
         if (serverMessage.success == true) {
             error.innerHTML = serverMessage.message
