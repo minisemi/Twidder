@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request
 import database_helper
 import json
@@ -90,9 +91,9 @@ def post_message(token, message, email):
 def return_message (success, message, data):
     d = {
         'success': success,
-        '"message': message,
+        'message': message,
         #'data': ['BDFL', 'Developer'],
-        'data': data,
+        'data': data
     }
     #json_string = '{"success": "Guido", "message":"Rossum", "data":}'
     return json.dumps(d)

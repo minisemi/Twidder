@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import sqlite3
 from flask import Flask
 from flask import g
 import json
 
-DATABASE = '/lab2/database.db'
+DATABASE = 'database.db'
 
 app = Flask(__name__)
 
@@ -62,7 +63,9 @@ def close_connection(exception):
 
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
-    rv = cur.fetchall()
+    #rv = cur.fetchall()
+    rv = [dict((cur.description[i][0], value) \
+              for i, value in enumerate(row)) for row in cur.fetchall()]
     cur.close()
     return (rv[0] if rv else None) if one else rv
 

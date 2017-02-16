@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Users;
+
 CREATE TABLE Users(
    email varchar(255),
    firstName varchar(255) NOT NULL,
@@ -9,6 +11,18 @@ CREATE TABLE Users(
    PRIMARY KEY( email )
 );
 
+INSERT INTO Users VALUES (
+  "a.ulander@live",
+  "Alexander",
+  "Ulander",
+  "pw",
+  "male",
+  "Uppsala",
+  "Sweden"
+);
+
+DROP TABLE IF EXISTS Posts;
+
 CREATE TABLE Posts(
     receiver varchar(255) NOT NULL,
     sender varchar(255),
@@ -17,6 +31,8 @@ CREATE TABLE Posts(
     PRIMARY KEY(sender, time),
     FOREIGN KEY (receiver, sender) REFERENCES Users(email, email)
 );
+
+DROP TABLE IF EXISTS ActiveUsers;
 
 CREATE TABLE ActiveUsers(
     user varchar(255),
