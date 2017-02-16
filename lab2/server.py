@@ -38,8 +38,9 @@ def sign_out():
     queryString = "IF  EXISTS (SELECT * FROM ActiveUsers WHERE token=?) DELETE FROM ActiveUsers WHERE token=?"
     query = database_helper.query_db(queryString, [token], one=True)
     if query is None:
-        return return_message(False, "User not found", user)
-    return "Signed out"
+        return return_message(False, "User not found", query)
+    else:
+        return return_message(True, "Signed out", query)
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
@@ -47,7 +48,7 @@ def change_password():
     old_password = request.form['old_password']
     new_password = request.form['new_password']
     if old_password==new_password:
-    user = database_helper.check_if_active(token)
+        user = database_helper.check_if_active(token)
     if user=="NotActive":
         return return_message(False, "User not active")         #Last parameter left out, insert null if not working
     if database_helper.check_password(old_password, user)==False:
@@ -55,12 +56,6 @@ def change_password():
     queryString = "UPDATE Users SET password=? WHERE user=?"
     database_helper.query_db(queryString, [new_password, user], one=True)
     return return_message(True, "Successfully changed password")
-
-
-
-
-
-
 
 @app.route('/get_user_data_by_token', methods =['GET'])
 def get_user_data_by_token():
