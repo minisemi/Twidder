@@ -15,9 +15,9 @@ def sign_in():
     user = database_helper.find_user(email)
     #return user + " : " + password
     if user is None:
-        return return_message(False, "No such user", user)
+        return return_message(False, "Sign in failed. No such user.", user)
     else:
-        return return_message(True, "Najs", user)
+        return return_message(True, "Signed in", user)
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
