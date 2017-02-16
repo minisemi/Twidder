@@ -38,7 +38,7 @@ def sign_out():
     queryString = "IF  EXISTS (SELECT * FROM ActiveUsers WHERE token=?) DELETE FROM ActiveUsers WHERE token=?"
     query = database_helper.query_db(queryString, [token], one=True)
     if query is None:
-        return return_message(False, "User not found", user)
+        return return_message(False, "User not found", token)
     return "Signed out"
 
 @app.route('/change_password', methods=['POST'])
