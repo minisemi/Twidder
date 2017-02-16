@@ -21,35 +21,74 @@ def sign_in():
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
-    query = "INSERT INTO database.Users VALUES (?,?,?,?,?,?,?)"
+    email = request.form['email']
+    firstName = request.form['firstName']
+    familyName = request.form['familyName']
+    password = request.form['password']
+    gender = request.form['gender']
+    city = request.form['city']
+    country = request.form['country']
+    query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
+    database_helper.query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
     return "lol"
 
 @app.route('/sign_out', methods=['POST'])
-def sign_out(token):
-    return 0
+def sign_out():
+    token = request.form['token']
+    queryString = "IF  EXISTS (SELECT * FROM ActiveUsers WHERE token=?) DELETE FROM ActiveUsers WHERE token=?"
+    query = database_helper.query_db(queryString, [token], one=True)
+    if query is None:
+        return return_message(False, "User not found", user)
+    return "Signed out"
 
 @app.route('/change_password', methods=['POST'])
-def change_password(token, old_password, new_password):
+def change_password():
+    token = request.form['token']
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    if old_password==new_password:
+    user = database_helper.check_if_active(token)
+    if user=="NotActive":
+        return return_message(False, "User not active")         #Last parameter left out, insert null if not working
+    if database_helper.check_password(old_password, user)==False:
+        return return_message(False, "Wrong password")
+    queryString = "UPDATE Users SET password=? WHERE user=?"
+    database_helper.query_db(queryString, [new_password, user], one=True)
+    return return_message(True, "Successfully changed password")
+
+
+
+
+
+
+
+@app.route('/get_user_data_by_token', methods =['GET'])
+def get_user_data_by_token():
+    token = request.form['token']
     return 0
 
-def get_user_data_by_token(token):
+@app.route('/get_user_data_by_email', methods =['GET'])
+def get_user_data_by_email():
+    token = request.form['token']
+    email = request.form['email']
     return 0
 
-def get_user_data_by_email(token, email):
-
+@app.route('/get_user_messages_by_token', methods =['GET'])
+def get_user_messages_by_token():
+    token = request.form['token']
     return 0
 
-
-def get_user_messages_by_token(token):
-
-    return 0
-
-
+@app.route('/get_user_messages_by_email', methods =['GET'])
 def get_user_messages_by_email(token, email):
+    token = request.form['token']
+    email = request.form['email']
     return 0
 
-
+@app.route('/post_message', methods =['POST'])
 def post_message(token, message, email):
+    token = request.form['token']
+    message = request.form['message']
+    email = request.form['email']
     return 0
 
 def return_message (success, message, data):

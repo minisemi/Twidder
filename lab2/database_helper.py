@@ -14,12 +14,30 @@ def find_user(email):
     return user
 
 def remove_user(email):
-    query = "IF  EXISTS (SELECT * FROM database.Users WHERE email=?) DELETE FROM database.Users WHERE email=?"
+    query = "IF  EXISTS (SELECT * FROM Users WHERE email=?) DELETE FROM Users WHERE email=?"
     query_db(query, [email], one=True)
-    return
+    if query_db(query, [email], one=True) is None:
+        return None
+    return "user removed"
 
 def create_post():
     return
+
+#Checks is user is active
+def check_if_active(token):
+    queryString = "SELECT user FROM ActiveUsers WHERE token=?"
+    user = query_db(queryString, [token], one=True)
+    if user is None:
+        return "NotActive"
+    return user
+
+#Checks if password is correct
+def check_password(password, user):
+    queryString = "SELECT password FROM Users WHERE user=? AND password=?"
+    correctPassword = query_db(queryString, [user, password], one=True)
+    if correctPassword is None:
+        return False
+    return True
 
 def init_db():
     with app.app_context():
