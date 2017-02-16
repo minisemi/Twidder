@@ -41,6 +41,7 @@ def sign_out():
         return return_message(False, "User not found", query)
     else:
         return return_message(True, "Signed out", query)
+    return "Signed out"
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
