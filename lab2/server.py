@@ -16,9 +16,10 @@ def sign_in():
     user = database_helper.find_user(email)
     #return user + " : " + password
     if user is None:
-        return return_message(False, "Sign in failed. No such user.", user)
-    else:
-        return return_message(True, "Signed in", user)
+        return return_message(False, "Sign in failed. No such user.", None)
+    if database_helper.check_password(password, user):
+        return return_message(True, "Signed in", None)
+    return return_message(False, "Wrong password", None)
 
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
@@ -39,12 +40,6 @@ def sign_up():
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
     token = request.form['token']
-    queryString = "IF  EXISTS (SELECT * FROM ActiveUsers WHERE token=?) DELETE FROM ActiveUsers WHERE token=?"
-    query = database_helper.query_db(queryString, [token], one=True)
-    if query is None:
-        return return_message(False, "User not found", query)
-    else:
-        return return_message(True, "Signed out", query)
     user = database_helper.check_if_active(token)
     if user is None:
         return return_message(False, "User not found", user)
