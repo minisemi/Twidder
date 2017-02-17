@@ -29,9 +29,12 @@ def sign_up():
     gender = request.form['gender']
     city = request.form['city']
     country = request.form['country']
-    query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
-    database_helper.query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
-    return "lol"
+    user = database_helper.find_user(email)
+    if user is not None:
+        return return_message(False, "User already exists", user)
+
+    database_helper.sign_up_user(email, firstName, familyName, password, gender, city, country)
+    return return_message(True, "Signed up", user)
 
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
@@ -42,20 +45,24 @@ def sign_out():
         return return_message(False, "User not found", query)
     else:
         return return_message(True, "Signed out", query)
+    user = database_helper.check_if_active(token)
+    if user is None:
+        return return_message(False, "User not found", user)
+
+    database_helper.sign_out_user(user)
+    return return_message(True, "Signed out", user)
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
     token = request.form['token']
     old_password = request.form['old_password']
     new_password = request.form['new_password']
-    if old_password==new_password:
-        user = database_helper.check_if_active(token)
+    user = database_helper.check_if_active(token)
     if user=="NotActive":
         return return_message(False, "User not active", user)         #Last parameter left out, insert null if not working
     if database_helper.check_password(old_password, user)==False:
         return return_message(False, "Wrong password", user)
-    queryString = "UPDATE Users SET password=? WHERE user=?"
-    database_helper.query_db(queryString, [new_password, user], one=True)
+    database_helper.update_password(new_password, user)
     return return_message(True, "Successfully changed password")
 
 @app.route('/get_user_data_by_token', methods =['GET'])
@@ -102,7 +109,15 @@ def post_message(token, message, email):
     token = request.form['token']
     message = request.form['message']
     email = request.form['email']
-    return 0
+    user = database_helper.check_if_active(token)
+    if user=="NotActive":
+        return return_message(False, "User not active", user)
+    receiver = database_helper.find_user(email)
+    if receiver is None:
+        return return_message(False, "ReceiverNotFound", user)
+
+    database_helper.create_post()
+    return return_message(True, "MessagePosted", user)
 
 def return_message (success, message, data):
     d = {
