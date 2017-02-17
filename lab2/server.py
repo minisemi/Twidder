@@ -52,9 +52,9 @@ def change_password():
     if old_password==new_password:
         user = database_helper.check_if_active(token)
     if user=="NotActive":
-        return return_message(False, "User not active")         #Last parameter left out, insert null if not working
+        return return_message(False, "User not active", user)         #Last parameter left out, insert null if not working
     if database_helper.check_password(old_password, user)==False:
-        return return_message(False, "Wrong password")
+        return return_message(False, "Wrong password", user)
     queryString = "UPDATE Users SET password=? WHERE user=?"
     database_helper.query_db(queryString, [new_password, user], one=True)
     return return_message(True, "Successfully changed password")
@@ -62,18 +62,30 @@ def change_password():
 @app.route('/get_user_data_by_token', methods =['GET'])
 def get_user_data_by_token():
     token = request.form['token']
-    return 0
+    user = database_helper.check_if_active(token)
+    if user == "NotActive":
+        return return_message(False,"User not active",user)
+    else:
+        return return_message(True, "Successfully fetched user data",database_helper.find_user(user))
 
 @app.route('/get_user_data_by_email', methods =['GET'])
 def get_user_data_by_email():
     token = request.form['token']
     email = request.form['email']
-    return 0
+    user = database_helper.check_if_active(token)
+    if user == "NotActive":
+        return return_message(False, "User not active", user)
+    else:
+        return return_message(True, "Successfully fetched user data", database_helper.find_user(email))
 
 @app.route('/get_user_messages_by_token', methods =['GET'])
 def get_user_messages_by_token():
     token = request.form['token']
-    return 0
+    user = database_helper.check_if_active(token)
+    if user == "NotActive":
+        return return_message(False, "User not active", user)
+    else:
+        return return_message(True, "Successfully fetched user messages", database_helper.find_user(email))
 
 @app.route('/get_user_messages_by_email', methods =['GET'])
 def get_user_messages_by_email(token, email):

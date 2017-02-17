@@ -9,7 +9,7 @@ DATABASE = 'database.db'
 app = Flask(__name__)
 
 def find_user(email):
-    user = query_db("SELECT * FROM Users WHERE email=?", [email], one=True)
+    user = query_db("SELECT email, firstName, familyName, gender, city, country FROM Users WHERE email=?", [email], one=True)
     if user is None:
         return None
     return user
