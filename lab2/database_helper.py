@@ -21,6 +21,10 @@ def remove_user(email):
         return None
     return "user removed"
 
+def get_posts(email):
+    query = "SELECT message FROM Posts WHERE receiver=?"
+    return query_db(query, [email])
+
 def create_post():
     return
 
@@ -28,9 +32,10 @@ def create_post():
 def check_if_active(token):
     queryString = "SELECT user FROM ActiveUsers WHERE token=?"
     user = query_db(queryString, [token], one=True)
-    if user is None:
+    email = user['user']
+    if email is None:
         return "NotActive"
-    return user
+    return email
 
 #Checks if password is correct
 def check_password(password, user):

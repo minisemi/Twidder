@@ -12,12 +12,22 @@ CREATE TABLE Users(
 );
 
 INSERT INTO Users VALUES (
-  "a.ulander@live",
+  "a.ulander@live.se",
   "Alexander",
   "Ulander",
   "pw",
   "male",
   "Uppsala",
+  "Sweden"
+);
+
+INSERT INTO Users VALUES (
+  "matilda@gmail.com",
+  "Matilda",
+  "Soderholm",
+  "pw",
+  "male",
+  "Hufvudstaden",
   "Sweden"
 );
 
@@ -32,6 +42,20 @@ CREATE TABLE Posts(
     FOREIGN KEY (receiver, sender) REFERENCES Users(email, email)
 );
 
+INSERT INTO Posts VALUES (
+  "a.ulander@live.se",
+  "matilda@gmail.com",
+  "Fan vad cool du e, hur blir jag lika cool som du",
+  "1"
+);
+
+INSERT INTO Posts VALUES (
+  "a.ulander@live.se",
+  "a.ulander@live.se",
+  "Fan vad cool ja e azz",
+  "2"
+);
+
 DROP TABLE IF EXISTS ActiveUsers;
 
 CREATE TABLE ActiveUsers(
@@ -41,3 +65,12 @@ CREATE TABLE ActiveUsers(
     FOREIGN KEY(user) REFERENCES Users(email)
 );
 
+INSERT INTO ActiveUsers VALUES (
+    "a.ulander@live.se",
+    "QWERTY1"
+);
+
+INSERT INTO ActiveUsers VALUES (
+    "matilda@gmail.com",
+    "QWERTY2"
+);
