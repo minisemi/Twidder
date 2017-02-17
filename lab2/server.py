@@ -17,7 +17,7 @@ def sign_in():
     #return user + " : " + password
     if user is None:
         return return_message(False, "Sign in failed. No such user.", None)
-    if database_helper.check_password(password, user):
+    if database_helper.check_password(password, email):
         return return_message(True, "Signed in", None)
     return return_message(False, "Wrong password", None)
 

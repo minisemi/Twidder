@@ -47,9 +47,9 @@ def check_if_active(token):
     return email
 
 #Checks if password is correct
-def check_password(password, user):
-    queryString = "SELECT password FROM Users WHERE user=? AND password=?"
-    correctPassword = query_db(queryString, [user, password], one=True)
+def check_password(password, email):
+    queryString = "SELECT password FROM Users WHERE email=? AND password=?"
+    correctPassword = query_db(queryString, [email, password], one=True)
     if correctPassword is None:
         return False
     return True
