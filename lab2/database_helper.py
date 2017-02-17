@@ -14,6 +14,14 @@ def find_user(email):
         return None
     return user
 
+def sign_out_user(user):
+    query = "DELETE FROM ActiveUsers WHERE user=?"
+    query_db(query, [user], one=True)
+
+def sign_up_user(email, firstName, familyName, password, gender, city, country):
+    query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
+    query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
+
 def remove_user(email):
     query = "IF  EXISTS (SELECT * FROM Users WHERE email=?) DELETE FROM Users WHERE email=?"
     query_db(query, [email], one=True)
@@ -21,8 +29,9 @@ def remove_user(email):
         return None
     return "user removed"
 
-def create_post():
-    return
+def create_post(sender, receiver, message):
+    query = "INSERT INTO Posts VALUES (?,?,?)"
+    query_db(query, [receiver, sender, message], one=True)
 
 #Checks is user is active
 def check_if_active(token):
@@ -39,6 +48,10 @@ def check_password(password, user):
     if correctPassword is None:
         return False
     return True
+
+def update_password(password, user):
+    queryString = "UPDATE Users SET password=? WHERE user=?"
+    query_db(queryString, [password, user], one=True)
 
 def init_db():
     with app.app_context():
