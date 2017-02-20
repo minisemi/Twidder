@@ -49,7 +49,17 @@ def check_if_active(token):
     email = user['user']
     return email
 
+def check_if_active_email(email):
+    queryString = "SELECT user FROM ActiveUsers WHERE email=?"
+    user = query_db(queryString, [email], one=True)
+    if user is None:
+        return "NotActive"
+    email = user['user']
+    return email
+
 def sign_in(email):
+    if check_if_active_email(email) is not None:
+        sign_out_user(email)
     query = "INSERT INTO ActiveUsers VALUES ?, ?"
     token = str(uuid.uuid4().hex)
     query_db(query, [email, token], one=True)
