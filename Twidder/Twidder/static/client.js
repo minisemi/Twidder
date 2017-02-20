@@ -20,19 +20,22 @@ function logout(){
 
 function login() {
     var error = document.getElementById("error")
-    var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
-        if (serverMessage.success == true) {
-            checkForToken(serverMessage.data, document.getElementById("loginemail").value)
+    var callback = function (response) {
+        if (response.success == true) {
+            checkForToken(response.data, document.getElementById("loginemail").value)
         } else {
-            error.innerHTML = serverMessage.message
+            error.innerHTML = response.message
         }
+    }
+    var form = new FormData(document.getElementById("login_form"))
+    xmlHttpRequest("POST", "login", form)
+    //var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
 }
 
 function signUp() {
 
     var proceed = true
     var error = document.getElementById("error")
-
 
     if(document.getElementById("password").value!=document.getElementById("repeatpsw").value){
         error.innerHTML = "Repeat password failed"
@@ -61,12 +64,15 @@ function signUp() {
         // TODO: Useful in lab 3
         // data = FormData();
         // data.append("email", email)
-        var serverMessage = serverstub.signUp(user)
-        if (serverMessage.success == true) {
-            error.innerHTML = serverMessage.message
-        } else {
-            error.innerHTML = serverMessage.message
+        var callback = function (response) {
+            if (response.success == true) {
+            error.innerHTML = response.message
+            } else {
+            error.innerHTML = response.message
+            }
         }
+        var serverMessage = serverstub.signUp(user)
+
     }
 }
 
@@ -108,12 +114,15 @@ function changePassword() {
     }
 
     if (newpw1!=oldpw){
-        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw1)
-        if(serverMessage.success==true){
-        pwText.innerHTML="Password successfully changed"
-        } else{
+        var callback = function (response) {
+            if(response.success==true){
+            pwText.innerHTML="Password successfully changed"
+            } else{
             pwText.innerHTML="Wrong password"
+            }
         }
+        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw1)
+
     } else {
         pwText.innerHTML="New password same as old"
     }
@@ -121,13 +130,15 @@ function changePassword() {
 }
 
 function displayUserData(){
+    var callback = function (response) {
+        document.getElementById("userfirstname").innerHTML=response.data.firstname
+        document.getElementById("userfamilyname").innerHTML=response.data.familyname
+        document.getElementById("useremail").innerHTML=response.data.email
+        document.getElementById("usergender").innerHTML=response.data.gender
+        document.getElementById("usercountry").innerHTML=response.data.country
+        document.getElementById("usercity").innerHTML=response.data.city
+    }
     var serverMessage=serverstub.getUserDataByToken(sessionStorage.token)
-    document.getElementById("userfirstname").innerHTML=serverMessage.data.firstname
-    document.getElementById("userfamilyname").innerHTML=serverMessage.data.familyname
-    document.getElementById("useremail").innerHTML=serverMessage.data.email
-    document.getElementById("usergender").innerHTML=serverMessage.data.gender
-    document.getElementById("usercountry").innerHTML=serverMessage.data.country
-    document.getElementById("usercity").innerHTML=serverMessage.data.city
 }
 
 function postMessage(message, email, messageBoard) {
@@ -145,6 +156,9 @@ function postMessage(message, email, messageBoard) {
 function refreshMessages(email, messageBoard) {
     var messages = serverstub.getUserMessagesByEmail(sessionStorage.token, email)
     var messageBoard = document.getElementById(messageBoard)
+    var callback = function () {
+
+    }
     if (messages.data.length>messageBoard.childElementCount){
         while (messageBoard.firstChild) {
             messageBoard.removeChild(messageBoard.firstChild);
