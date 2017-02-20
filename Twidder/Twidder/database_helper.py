@@ -4,6 +4,7 @@ from flask import Flask
 from flask import g
 import uuid
 import json
+import time
 
 DATABASE = 'database.db'
 
@@ -37,8 +38,8 @@ def get_posts(email):
     return query_db(query, [email])
 
 def create_post(sender, receiver, message):
-    query = "INSERT INTO Posts VALUES (?,?,?)"
-    query_db(query, [receiver, sender, message], one=True)
+    query = "INSERT INTO Posts VALUES (?,?,?,?)"
+    query_db(query, [receiver, sender, message, time.time()], one=True)
 
 #Checks is user is active
 def check_if_active(token):
@@ -50,7 +51,7 @@ def check_if_active(token):
     return email
 
 def check_if_active_email(email):
-    queryString = "SELECT user FROM ActiveUsers WHERE email=?"
+    queryString = "SELECT user FROM ActiveUsers WHERE user=?"
     user = query_db(queryString, [email], one=True)
     if user is None:
         return "NotActive"
@@ -58,9 +59,9 @@ def check_if_active_email(email):
     return email
 
 def sign_in(email):
-    if check_if_active_email(email) is not None:
+    if check_if_active_email(email) is not "NotActiveA":
         sign_out_user(email)
-    query = "INSERT INTO ActiveUsers VALUES ?, ?"
+    query = "INSERT INTO ActiveUsers VALUES (?, ?)"
     token = str(uuid.uuid4().hex)
     query_db(query, [email, token], one=True)
 
@@ -73,7 +74,7 @@ def check_password(password, email):
     return True
 
 def update_password(password, user):
-    queryString = "UPDATE Users SET password=? WHERE user=?"
+    queryString = "UPDATE Users SET password=? WHERE email=?"
     query_db(queryString, [password, user], one=True)
 
 def init_db():

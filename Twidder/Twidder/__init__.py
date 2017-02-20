@@ -36,7 +36,7 @@ def sign_up():
     if user is not None:
         return return_message(False, "User already exists", None)
     regex_pattern = re.compile(".+@.+\..+")
-    if regex_pattern.match(email) is False:
+    if regex_pattern.match(email) is None:
         return return_message(False, "Invalid email address", email)
     if len(password) < 5:
         return return_message(False, "Password too short", password)
@@ -49,7 +49,6 @@ def sign_out():
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not found", None)
-
     database_helper.sign_out_user(user)
     return return_message(True, "Signed out", user)
 
@@ -64,7 +63,7 @@ def change_password():
     if database_helper.check_password(old_password, user) is False:
         return return_message(False, "Wrong password", user)
     database_helper.update_password(new_password, user)
-    return return_message(True, "Successfully changed password")
+    return return_message(True, "Successfully changed password", None)
 
 @app.route('/get_user_data_by_token', methods =['GET'])
 def get_user_data_by_token():
@@ -77,17 +76,20 @@ def get_user_data_by_token():
 
 @app.route('/get_user_data_by_email', methods =['GET'])
 def get_user_data_by_email():
-    token = request.form['token']
-    email = request.form['email']
+    token = request.headers['token']
+    email = request.headers['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
+    user = database_helper.find_user(email)
+    if user is None:
+        return return_message(False, "No such user", user)
     else:
-        return return_message(True, "Successfully fetched user data", database_helper.find_user(email))
+        return return_message(True, "Successfully fetched user data", user)
 
 @app.route('/get_user_messages_by_token', methods =['GET'])
 def get_user_messages_by_token():
-    token = request.form['token']
+    token = request.headers['token']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
@@ -95,17 +97,23 @@ def get_user_messages_by_token():
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(user))
 
 @app.route('/get_user_messages_by_email', methods =['GET'])
-def get_user_messages_by_email(token, email):
-    token = request.form['token']
-    email = request.form['email']
+def get_user_messages_by_email():
+    token = request.headers['token']
+    email = request.headers['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
+    user = database_helper.find_user(email)
+    if user is None:
+        return return_message(False, "No such user", user)
+    posts = database_helper.get_posts(email)
+    if not posts:
+        return return_message(False, "No user messages", None)
     else:
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(email))
 
 @app.route('/post_message', methods =['POST'])
-def post_message(token, message, email):
+def post_message():
     token = request.form['token']
     message = request.form['message']
     email = request.form['email']
@@ -116,7 +124,7 @@ def post_message(token, message, email):
     if receiver is None:
         return return_message(False, "ReceiverNotFound", None)
 
-    database_helper.create_post()
+    database_helper.create_post(user, email,message)
     return return_message(True, "MessagePosted", user)
 
 def return_message (success, message, data):
