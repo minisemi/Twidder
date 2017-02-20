@@ -2,6 +2,7 @@
 from flask import Flask, request
 import database_helper
 import json
+import re
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ def sign_in():
     if user is None:
         return return_message(False, "Sign in failed. No such user.", None)
     if database_helper.check_password(password, email):
+        database_helper.sign_in(email)
         return return_message(True, "Signed in", None)
     return return_message(False, "Wrong password", None)
 
@@ -33,9 +35,13 @@ def sign_up():
     user = database_helper.find_user(email)
     if user is not None:
         return return_message(False, "User already exists", None)
-
+    regex_pattern = re.compile(".+@.+\..+")
+    if regex_pattern.match(email) is False:
+        return return_message(False, "Invalid email address", email)
+    if len(password) < 5:
+        return return_message(False, "Password too short", password)
     database_helper.sign_up_user(email, firstName, familyName, password, gender, city, country)
-    return return_message(True, "Signed up", user)
+    return return_message(True, "Signed up", email)
 
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
@@ -55,7 +61,7 @@ def change_password():
     user = database_helper.check_if_active(token)
     if user=="NotActive":
         return return_message(False, "User not active", None)         #Last parameter left out, insert null if not working
-    if database_helper.check_password(old_password, user)==False:
+    if database_helper.check_password(old_password, user) is False:
         return return_message(False, "Wrong password", user)
     database_helper.update_password(new_password, user)
     return return_message(True, "Successfully changed password")
