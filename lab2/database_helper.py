@@ -50,7 +50,7 @@ def check_if_active(token):
     return email
 
 def sign_in(email):
-    query = "INSERT INTO ActiveUsers VALUES ?, ?"
+    query = "INSERT INTO ActiveUsers VALUES (?, ?)"
     token = str(uuid.uuid4().hex)
     query_db(query, [email, token], one=True)
 
