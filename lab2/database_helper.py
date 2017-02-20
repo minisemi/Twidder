@@ -60,7 +60,7 @@ def check_if_active_email(email):
 def sign_in(email):
     if check_if_active_email(email) is not None:
         sign_out_user(email)
-    query = "INSERT INTO ActiveUsers VALUES ?, ?"
+    query = "INSERT INTO ActiveUsers VALUES (?, ?)"
     token = str(uuid.uuid4().hex)
     query_db(query, [email, token], one=True)
 
