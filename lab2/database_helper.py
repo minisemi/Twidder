@@ -2,6 +2,7 @@
 import sqlite3
 from flask import Flask
 from flask import g
+import uuid
 import json
 
 DATABASE = 'database.db'
@@ -19,6 +20,8 @@ def sign_out_user(user):
     query_db(query, [user], one=True)
 
 def sign_up_user(email, firstName, familyName, password, gender, city, country):
+
+
     query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
     query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
 
@@ -45,6 +48,11 @@ def check_if_active(token):
         return "NotActive"
     email = user['user']
     return email
+
+def sign_in(email):
+    query = "INSERT INTO ActiveUsers VALUES ?, ?"
+    token = str(uuid.uuid4().hex)
+    query_db(query, [email, token], one=True)
 
 #Checks if password is correct
 def check_password(password, email):
