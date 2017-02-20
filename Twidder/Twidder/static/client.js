@@ -45,7 +45,7 @@ function signUp() {
     var select = document.getElementById("gender")
 
     if (proceed) {
-        var email = document.getElementById("email").value
+        /*var email = document.getElementById("email").value
         var password = document.getElementById("password").value
         var firstname = document.getElementById("firstname").value
         var familyname = document.getElementById("familyname").value
@@ -60,10 +60,7 @@ function signUp() {
             gender: gender,
             city: city,
             country: country
-        }
-        // TODO: Useful in lab 3
-        // data = FormData();
-        // data.append("email", email)
+        }*/
         var callback = function (response) {
             if (response.success == true) {
             error.innerHTML = response.message
@@ -71,8 +68,10 @@ function signUp() {
             error.innerHTML = response.message
             }
         }
+        var form = new FormData(document.getElementById("signup_form"))
+        form.delete("repeatpsw")
+        xmlHttpRequest("POST", "sign_in", form, callback)
         var serverMessage = serverstub.signUp(user)
-
     }
 }
 
