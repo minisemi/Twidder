@@ -195,3 +195,19 @@ function searchForUser() {
       //  alert(serverMessage.message)
     }
 }
+
+function xmlHttpRequest(method, url, data, callback){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText)
+            callback(response);
+        }
+    };
+    xhttp.open(method, "http://localhost:5000/" + url, true);
+    if (data==null){
+        xhttp.send();
+    }
+    else
+        xhttp.send(data);
+}
