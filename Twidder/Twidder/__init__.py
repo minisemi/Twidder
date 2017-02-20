@@ -4,11 +4,11 @@ import database_helper
 import json
 import re
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def root():
+    return app.send_static_file('client.html')
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
