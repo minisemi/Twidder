@@ -28,7 +28,7 @@ function login() {
         }
     }
     var form = new FormData(document.getElementById("login_form"))
-    xmlHttpRequest("POST", "login", form)
+    xmlHttpRequest("POST", "sign_in", form, callback)
     //var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
 }
 
@@ -180,20 +180,23 @@ function searchForUser() {
 
     var searchEmail = document.getElementById("searchEmail").value
     var serverMessage=serverstub.getUserDataByEmail(sessionStorage.token, searchEmail)
-    if (serverMessage.success == true) {
+    var callback = function (response) {
+        if (response.success == true) {
 
         document.getElementById("searchResults").style.visibility="visible"
-        document.getElementById("searchfirstname").innerHTML = serverMessage.data.firstname
-        document.getElementById("searchfamilyname").innerHTML = serverMessage.data.familyname
-        document.getElementById("searchemail").innerHTML = serverMessage.data.email
-        document.getElementById("searchgender").innerHTML = serverMessage.data.gender
-        document.getElementById("searchcountry").innerHTML = serverMessage.data.country
-        document.getElementById("searchcity").innerHTML = serverMessage.data.city
+        document.getElementById("searchfirstname").innerHTML = response.data.firstname
+        document.getElementById("searchfamilyname").innerHTML = response.data.familyname
+        document.getElementById("searchemail").innerHTML = response.data.email
+        document.getElementById("searchgender").innerHTML = response.data.gender
+        document.getElementById("searchcountry").innerHTML = response.data.country
+        document.getElementById("searchcity").innerHTML = response.data.city
         refreshMessages(searchEmail,"searchmessageBoard")
 
-    } else {
+        } else {
       //  alert(serverMessage.message)
+         }
     }
+
 }
 
 function xmlHttpRequest(method, url, data, callback){
