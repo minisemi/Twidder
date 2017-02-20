@@ -41,9 +41,9 @@ def create_post(sender, receiver, message):
 def check_if_active(token):
     queryString = "SELECT user FROM ActiveUsers WHERE token=?"
     user = query_db(queryString, [token], one=True)
-    email = user['user']
-    if email is None:
+    if user is None:
         return "NotActive"
+    email = user['user']
     return email
 
 #Checks if password is correct
@@ -80,10 +80,12 @@ def close_connection(exception):
         db.close()
 
 def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
+    db = get_db()
+    cur = db.execute(query, args)
     #rv = cur.fetchall()
     rv = [dict((cur.description[i][0], value) \
               for i, value in enumerate(row)) for row in cur.fetchall()]
+    db.commit()
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
