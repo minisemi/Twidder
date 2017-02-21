@@ -10,12 +10,14 @@ function displayView() {
     }
 }
 
-
 function logout(){
-    serverstub.signOut(sessionStorage.token)
-    sessionStorage.removeItem("token")
-    sessionStorage.removeItem("email")
-    displayView()
+
+    var callback = function () {
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("email")
+        displayView()
+    }
+    xmlHttpRequest("POST", "sign_out", null, callback)
 }
 
 function login() {
@@ -29,7 +31,6 @@ function login() {
     }
     var form = new FormData(document.getElementById("login_form"))
     xmlHttpRequest("POST", "sign_in", form, callback)
-    //var serverMessage = serverstub.signIn(document.getElementById("loginemail").value, document.getElementById("loginpassword").value)
 }
 
 function signUp() {
@@ -45,22 +46,7 @@ function signUp() {
     var select = document.getElementById("gender")
 
     if (proceed) {
-        /*var email = document.getElementById("email").value
-        var password = document.getElementById("password").value
-        var firstname = document.getElementById("firstname").value
-        var familyname = document.getElementById("familyname").value
-        var gender = select.options[select.selectedIndex].text
-        var city = document.getElementById("city").value
-        var country = document.getElementById("country").value
-        var user = {
-            email: email,
-            password: password,
-            firstname: firstname,
-            familyname: familyname,
-            gender: gender,
-            city: city,
-            country: country
-        }*/
+
         var callback = function (response) {
             if (response.success == true) {
             error.innerHTML = response.message
@@ -70,8 +56,7 @@ function signUp() {
         }
         var form = new FormData(document.getElementById("signup_form"))
         form.delete("repeatpsw")
-        xmlHttpRequest("POST", "sign_in", form, callback)
-        var serverMessage = serverstub.signUp(user)
+        xmlHttpRequest("POST", "sign_up", form, callback)
     }
 }
 
@@ -103,24 +88,24 @@ function openTab(tabName) {
 }
 
 function changePassword() {
+    var form = new FormData(document.getElementById("changePwForm"))
+
     var pwText = document.getElementById("passwordText")
-    var oldpw =document.getElementById("changePasswordOld").value
-    var newpw1=document.getElementById("changePasswordNew1").value
-    var newpw2=document.getElementById("changePasswordNew2").value
-    if(newpw1!=newpw2){
+    if(form.get("new_password")!=form.get("repeat_new_password")){
         pwText.innerHTML = "Repeat password failed"
         return false
     }
 
-    if (newpw1!=oldpw){
+    if (form.get("new_password")!=form.get("old_password")){
         var callback = function (response) {
             if(response.success==true){
-            pwText.innerHTML="Password successfully changed"
+            pwText.innerHTML=response.message
             } else{
-            pwText.innerHTML="Wrong password"
+            pwText.innerHTML=response.message
             }
         }
-        var serverMessage = serverstub.changePassword(sessionStorage.token,oldpw,newpw1)
+        form.delete("repeat_new_password")
+        xmlHttpRequest("POST", "change_password", form, callback)
 
     } else {
         pwText.innerHTML="New password same as old"
@@ -137,42 +122,51 @@ function displayUserData(){
         document.getElementById("usercountry").innerHTML=response.data.country
         document.getElementById("usercity").innerHTML=response.data.city
     }
-    var serverMessage=serverstub.getUserDataByToken(sessionStorage.token)
+    xmlHttpRequest("GET", "get_user_data_by_token", null, callback)
 }
 
 function postMessage(message, email, messageBoard) {
+    var form = new FormData()
     var message = document.getElementById(message).value
-    var serverMessage=serverstub.postMessage(sessionStorage.token,message,email)
     var messageBoard = document.getElementById(messageBoard)
-    var textArea = document.createElement("textarea")
-    textArea.setAttribute("readonly","readonly")
+    var callback = function (response) {
+        if (response.success){
+            var textArea = document.createElement("textarea")
+            textArea.setAttribute("readonly","readonly")
+            var textNode = document.createTextNode(message)
+            textArea.appendChild(textNode)
+            messageBoard.insertBefore(textArea, messageBoard.firstChild)
+        }
+    }
 
-    var textNode = document.createTextNode(message)
-    textArea.appendChild(textNode)
-    messageBoard.insertBefore(textArea, messageBoard.firstChild);
+    form.append("message", message)
+    form.append("email", email)
+    xmlHttpRequest("POST", "post_message", form, callback)
 }
 
 function refreshMessages(email, messageBoard) {
-    var messages = serverstub.getUserMessagesByEmail(sessionStorage.token, email)
     var messageBoard = document.getElementById(messageBoard)
-    var callback = function () {
+    var callback = function (response) {
 
-    }
-    if (messages.data.length>messageBoard.childElementCount){
-        while (messageBoard.firstChild) {
-            messageBoard.removeChild(messageBoard.firstChild);
+        if (response.data.length>messageBoard.childElementCount){
+            while (messageBoard.firstChild) {
+                messageBoard.removeChild(messageBoard.firstChild);
+            }
+
+            for (var i = 0; i < response.data.length; i++) {
+                var textArea = document.createElement("textarea")
+                textArea.setAttribute("readonly","readonly")
+
+                var text = response.data[i].content
+                var textNode = document.createTextNode(text)
+                textArea.appendChild(textNode)
+                messageBoard.appendChild(textArea)
+            }
         }
-
-        for (var i = 0; i < messages.data.length; i++) {
-            var textArea = document.createElement("textarea")
-            textArea.setAttribute("readonly","readonly")
-
-            var text = messages.data[i].content
-            var textNode = document.createTextNode(text)
-            textArea.appendChild(textNode)
-            messageBoard.appendChild(textArea)
-        }
     }
+    var form = new FormData()
+    form.append("email", email)
+    xmlHttpRequest("GET", "get_user_messages_by_email", form, callback)
 }
 
 function searchForUser() {
@@ -207,6 +201,7 @@ function xmlHttpRequest(method, url, data, callback){
         }
     };
     xhttp.open(method, "http://localhost:5000/" + url, true);
+    xhttp.setRequestHeader("token",sessionStorage.token)
     if (data==null){
         xhttp.send();
     }
