@@ -171,8 +171,11 @@ function refreshMessages(email, messageBoard) {
 
 function searchForUser() {
 
+    var error = document.getElementById("error")
+    var form = new FormData(document.getElementById("searchForm"))
+
+
     var searchEmail = document.getElementById("searchEmail").value
-    var serverMessage=serverstub.getUserDataByEmail(sessionStorage.token, searchEmail)
     var callback = function (response) {
         if (response.success == true) {
 
@@ -189,6 +192,7 @@ function searchForUser() {
       //  alert(serverMessage.message)
          }
     }
+    xmlHttpRequest("GET", "get_user_data_by_email", form, callback)
 
 }
 
