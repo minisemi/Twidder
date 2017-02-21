@@ -3,6 +3,7 @@ from flask import Flask, request
 import database_helper
 import json
 import re
+import uuid
 
 app = Flask(__name__, static_url_path='')
 
@@ -19,8 +20,9 @@ def sign_in():
     if user is None:
         return return_message(False, "Sign in failed. No such user.", None)
     if database_helper.check_password(password, email):
-        database_helper.sign_in(email)
-        return return_message(True, "Signed in", None)
+        token = str(uuid.uuid4().hex)
+        database_helper.add_active_user(email, token)
+        return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
 @app.route('/sign_up', methods=['POST'])
@@ -32,31 +34,40 @@ def sign_up():
     gender = request.form['gender']
     city = request.form['city']
     country = request.form['country']
+
+    if len(email)*len(firstName)*len(familyName)*len(password)*len(gender)*len(city)*len(country)==0:
+        return return_message(False, "Empty field(s)", None)
+
+    if gender != "Male" and gender!="Female" and gender!="Other":
+        return return_message(False, "Invalid gender", None)
+
     user = database_helper.find_user(email)
     if user is not None:
         return return_message(False, "User already exists", None)
-    regex_pattern = re.compile(".+@.+\..+")
+    regex_pattern = re.compile(".+@.+") #googla html5's regex
     if regex_pattern.match(email) is None:
         return return_message(False, "Invalid email address", email)
     if len(password) < 5:
-        return return_message(False, "Password too short", password)
-    database_helper.sign_up_user(email, firstName, familyName, password, gender, city, country)
+        return return_message(False, "Password too short", None)
+    database_helper.add_user(email, firstName, familyName, password, gender, city, country)
     return return_message(True, "Signed up", email)
 
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
-    token = request.form['token']
+    token = request.headers['token']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not found", None)
-    database_helper.sign_out_user(user)
+    database_helper.remove_active_user(user)
     return return_message(True, "Signed out", user)
 
-@app.route('/change_password', methods=['POST'])
+@app.route('/change_password', methods=['POST'])#put token in header instead
 def change_password():
-    token = request.form['token']
+    token = request.headers['token']
     old_password = request.form['old_password']
     new_password = request.form['new_password']
+    if len(new_password) < 5 or new_password == old_password:
+        return return_message(False, "Invalid new password", None)
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)         #Last parameter left out, insert null if not working
@@ -75,9 +86,9 @@ def get_user_data_by_token():
         return return_message(True, "Successfully fetched user data", database_helper.find_user(user))
 
 @app.route('/get_user_data_by_email', methods =['GET'])
-def get_user_data_by_email():
+def get_user_data_by_email(email):#add param here
     token = request.headers['token']
-    email = request.headers['email']
+    #email = request.headers['email']#remove here
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
@@ -114,7 +125,7 @@ def get_user_messages_by_email():
 
 @app.route('/post_message', methods =['POST'])
 def post_message():
-    token = request.form['token']
+    token = request.headers['token']
     message = request.form['message']
     email = request.form['email']
     user = database_helper.check_if_active(token)
@@ -125,7 +136,7 @@ def post_message():
         return return_message(False, "ReceiverNotFound", None)
 
     database_helper.create_post(user, email,message)
-    return return_message(True, "MessagePosted", user)
+    return return_message(True, "MessagePosted", None)
 
 def return_message (success, message, data):
     d = {
