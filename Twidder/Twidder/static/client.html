@@ -117,11 +117,11 @@
 
 <div id="Account" class="tabcontent">
   <h3>Account</h3>
-  <form id="changePwForm">
+  <form id="changePwForm" onsubmit="changePassword();return false">
   <div class="form">Old pw<input type="password" name="old_password" id="changePasswordOld" minLength=5 required></div>
   <div class="form">New pw<input type="password" name="new_password" id="changePasswordNew1" minLength=5 required></div>
   <div class="form">Repeat new pw<input type="password" name="repeat_new_password" id="changePasswordNew2" minLength=5 required></div>
-  <button onclick="changePassword()">Change pw</button>
+  <div class="form"><input type="submit">Change pw</div>
   </form>
   <p id=passwordText></p>
   <button onclick="logout()">Logout</button>
