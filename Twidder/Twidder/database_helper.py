@@ -2,7 +2,7 @@
 import sqlite3
 from flask import Flask
 from flask import g
-import uuid
+
 import json
 import time
 
@@ -16,15 +16,16 @@ def find_user(email):
         return None
     return user
 
-def sign_out_user(user):
+
+def remove_active_user(user):
     query = "DELETE FROM ActiveUsers WHERE user=?"
     query_db(query, [user], one=True)
 
-def sign_up_user(email, firstName, familyName, password, gender, city, country):
 
-
+def add_user(email, firstName, familyName, password, gender, city, country):
     query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
     query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
+
 
 def remove_user(email):
     query = "IF  EXISTS (SELECT * FROM Users WHERE email=?) DELETE FROM Users WHERE email=?"
@@ -33,13 +34,16 @@ def remove_user(email):
         return None
     return "user removed"
 
+
 def get_posts(email):
     query = "SELECT message FROM Posts WHERE receiver=?"
     return query_db(query, [email])
 
+
 def create_post(sender, receiver, message):
     query = "INSERT INTO Posts VALUES (?,?,?,?)"
     query_db(query, [receiver, sender, message, time.time()], one=True)
+
 
 #Checks is user is active
 def check_if_active(token):
@@ -50,32 +54,32 @@ def check_if_active(token):
     email = user['user']
     return email
 
+
 def check_if_active_email(email):
-    queryString = "SELECT user FROM ActiveUsers WHERE user=?"
-    user = query_db(queryString, [email], one=True)
+    query = "SELECT user FROM ActiveUsers WHERE user=?"
+    user = query_db(query, [email], one=True)
     if user is None:
         return "NotActive"
     email = user['user']
     return email
 
-def sign_in(email):
+def add_active_user(email, token):
     if check_if_active_email(email) is not "NotActiveA":
-        sign_out_user(email)
+        remove_active_user(email)
     query = "INSERT INTO ActiveUsers VALUES (?, ?)"
-    token = str(uuid.uuid4().hex)
     query_db(query, [email, token], one=True)
 
 #Checks if password is correct
 def check_password(password, email):
-    queryString = "SELECT password FROM Users WHERE email=? AND password=?"
-    correctPassword = query_db(queryString, [email, password], one=True)
-    if correctPassword is None:
+    query = "SELECT password FROM Users WHERE email=? AND password=?"
+    correct_password = query_db(query, [email, password], one=True)
+    if correct_password is None:
         return False
     return True
 
 def update_password(password, user):
-    queryString = "UPDATE Users SET password=? WHERE email=?"
-    query_db(queryString, [password, user], one=True)
+    query = "UPDATE Users SET password=? WHERE email=?"
+    query_db(query, [password, user], one=True)
 
 def init_db():
     with app.app_context():

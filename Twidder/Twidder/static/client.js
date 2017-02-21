@@ -132,7 +132,9 @@ function postMessage(message, email, messageBoard) {
         if (response.success){
             var textArea = document.createElement("textarea")
             textArea.setAttribute("readonly","readonly")
+            var senderNode = document.createTextNode(email + ": \n")
             var textNode = document.createTextNode(message)
+            textArea.appendChild(senderNode)
             textArea.appendChild(textNode)
             messageBoard.insertBefore(textArea, messageBoard.firstChild)
         }
