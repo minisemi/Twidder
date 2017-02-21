@@ -111,7 +111,7 @@ def get_user_messages_by_token():
 @app.route('/get_user_messages_by_email', methods =['GET'])
 def get_user_messages_by_email():
     token = request.headers['token']
-    email = request.headers['email']
+    email = request.form['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
