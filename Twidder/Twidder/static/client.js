@@ -93,7 +93,7 @@ function changePassword() {
     var pwText = document.getElementById("passwordText")
     if(form.get("new_password")!=form.get("repeat_new_password")){
         pwText.innerHTML = "Repeat password failed"
-        return false
+        return
     }
 
     if (form.get("new_password")!=form.get("old_password")){
@@ -110,7 +110,6 @@ function changePassword() {
     } else {
         pwText.innerHTML="New password same as old"
     }
-    return false
 }
 
 function displayUserData(){
