@@ -85,7 +85,7 @@ def get_user_data_by_token():
     else:
         return return_message(True, "Successfully fetched user data", database_helper.find_user(user))
 
-@app.route('/get_user_data_by_email/<email>', methods =['GET'])
+@app.route('/get_user_data_by_email/<string:email>', methods =['GET'])
 def get_user_data_by_email(email):#add param here
     token = request.headers['token']
     #email = request.args.get('email')
@@ -108,10 +108,9 @@ def get_user_messages_by_token():
     else:
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(user))
 
-@app.route('/get_user_messages_by_email', methods =['GET'])
-def get_user_messages_by_email():
+@app.route('/get_user_messages_by_email/<string:email>', methods =['GET'])
+def get_user_messages_by_email(email):
     token = request.headers['token']
-    email = request.headers['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
