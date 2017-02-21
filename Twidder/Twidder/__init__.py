@@ -50,7 +50,7 @@ def sign_up():
     if len(password) < 5:
         return return_message(False, "Password too short", None)
     database_helper.add_user(email, firstName, familyName, password, gender, city, country)
-    return return_message(True, "Signed up", email)
+    return return_message(True, "Signed up", None)
 
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
@@ -59,7 +59,7 @@ def sign_out():
     if user is "NotActive":
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
-    return return_message(True, "Signed out", user)
+    return return_message(True, "Signed out", None)
 
 @app.route('/change_password', methods=['POST'])#put token in header instead
 def change_password():
@@ -85,9 +85,10 @@ def get_user_data_by_token():
     else:
         return return_message(True, "Successfully fetched user data", database_helper.find_user(user))
 
-@app.route('/get_user_data_by_email', methods =['GET'])
+@app.route('/get_user_data_by_email/<email>', methods =['GET'])
 def get_user_data_by_email(email):#add param here
     token = request.headers['token']
+    #email = request.args.get('email')
     #email = request.headers['email']#remove here
     user = database_helper.check_if_active(token)
     if user is "NotActive":
