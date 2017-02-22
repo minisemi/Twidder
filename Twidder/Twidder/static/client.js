@@ -17,7 +17,7 @@ function logout(){
         sessionStorage.removeItem("email")
         displayView()
     }
-    xmlHttpRequest("POST", "sign_out", null, callback)
+    xmlHttpRequest("POST", "sign_out", null, "",callback)
 }
 
 function login() {
@@ -30,7 +30,7 @@ function login() {
         }
     }
     var form = new FormData(document.getElementById("login_form"))
-    xmlHttpRequest("POST", "sign_in", form, callback)
+    xmlHttpRequest("POST", "sign_in", form, "",callback)
 }
 
 function signUp() {
@@ -56,7 +56,7 @@ function signUp() {
         }
         var form = new FormData(document.getElementById("signup_form"))
         form.delete("repeatpsw")
-        xmlHttpRequest("POST", "sign_up", form, callback)
+        xmlHttpRequest("POST", "sign_up", form, "",callback)
     }
 }
 
@@ -105,7 +105,7 @@ function changePassword() {
             }
         }
         form.delete("repeat_new_password")
-        xmlHttpRequest("POST", "change_password", form, callback)
+        xmlHttpRequest("POST", "change_password", form, "",callback)
 
     } else {
         pwText.innerHTML="New password same as old"
@@ -114,14 +114,14 @@ function changePassword() {
 
 function displayUserData(){
     var callback = function (response) {
-        document.getElementById("userfirstname").innerHTML=response.data.firstname
-        document.getElementById("userfamilyname").innerHTML=response.data.familyname
+        document.getElementById("userfirstname").innerHTML=response.data.firstName
+        document.getElementById("userfamilyname").innerHTML=response.data.familyName
         document.getElementById("useremail").innerHTML=response.data.email
         document.getElementById("usergender").innerHTML=response.data.gender
         document.getElementById("usercountry").innerHTML=response.data.country
         document.getElementById("usercity").innerHTML=response.data.city
     }
-    xmlHttpRequest("GET", "get_user_data_by_token", null, callback)
+    xmlHttpRequest("GET", "get_user_data_by_token", null, "",callback)
 }
 
 function postMessage(message, email, messageBoard) {
@@ -142,7 +142,7 @@ function postMessage(message, email, messageBoard) {
 
     form.append("message", message)
     form.append("email", email)
-    xmlHttpRequest("POST", "post_message", form, callback)
+    xmlHttpRequest("POST", "post_message", form, "",callback)
 }
 
 function refreshMessages(email, messageBoard) {
@@ -165,16 +165,13 @@ function refreshMessages(email, messageBoard) {
             }
         }
     }
-    var form = new FormData()
-    form.append("email", email)
-    xmlHttpRequest("GET", "get_user_messages_by_email", form, callback)
+    var params = JSON.stringify({ "email": email })
+    xmlHttpRequest("GET", "get_user_messages_by_email", form, params,callback)
 }
 
 function searchForUser() {
 
     var error = document.getElementById("error")
-    var form = new FormData(document.getElementById("searchForm"))
-
 
     var searchEmail = document.getElementById("searchEmail").value
     var callback = function (response) {
@@ -193,7 +190,8 @@ function searchForUser() {
       //  alert(serverMessage.message)
          }
     }
-    xmlHttpRequest("GET", "get_user_data_by_email", form, callback)
+    var params = JSON.stringify({ "email": email })
+    xmlHttpRequest("GET", "get_user_data_by_email", form, params, callback)
 
 }
 
@@ -205,8 +203,9 @@ function xmlHttpRequest(method, url, data, params, callback){
             callback(response);
         }
     };
-    var params = JSON.stringify({ appoverGUID: approverGUID });
-    xhttp.open(method, "http://localhost:5000/" + url, true);
+    //var params = JSON.stringify({ appoverGUID: approverGUID })
+    //var params = "somevariable=somevalue&anothervariable=anothervalue";
+    xhttp.open(method, "http://localhost:5000/" + url+"?"+params, true);
     xhttp.setRequestHeader("token",sessionStorage.token)
     if (data==null && params!=null){
         xhttp.send();
