@@ -4,6 +4,7 @@ import database_helper
 import json
 import re
 import uuid
+import sys
 
 app = Flask(__name__, static_url_path='')
 
@@ -85,11 +86,10 @@ def get_user_data_by_token():
     else:
         return return_message(True, "Successfully fetched user data", database_helper.find_user(user))
 
-@app.route('/get_user_data_by_email/<string:email>', methods =['GET'])
-def get_user_data_by_email(email):#add param here
+@app.route('/get_user_data_by_email', methods =['GET'])
+def get_user_data_by_email():#add param here
     token = request.headers['token']
-    #email = request.args.get('email')
-    #email = request.headers['email']#remove here
+    email = request.args['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
         return return_message(False, "User not active", None)
@@ -108,10 +108,12 @@ def get_user_messages_by_token():
     else:
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(user))
 
-@app.route('/get_user_messages_by_email/<string:email>', methods =['GET'])
-def get_user_messages_by_email(email):
+@app.route('/get_user_messages_by_email', methods =['GET'])
+def get_user_messages_by_email():
     token = request.headers['token']
+    email = request.args['email']
     user = database_helper.check_if_active(token)
+
     if user is "NotActive":
         return return_message(False, "User not active", None)
     user = database_helper.find_user(email)
