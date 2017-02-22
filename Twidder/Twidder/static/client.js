@@ -197,7 +197,7 @@ function searchForUser() {
 
 }
 
-function xmlHttpRequest(method, url, data, callback){
+function xmlHttpRequest(method, url, data, params, callback){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -205,9 +205,10 @@ function xmlHttpRequest(method, url, data, callback){
             callback(response);
         }
     };
+    var params = JSON.stringify({ appoverGUID: approverGUID });
     xhttp.open(method, "http://localhost:5000/" + url, true);
     xhttp.setRequestHeader("token",sessionStorage.token)
-    if (data==null){
+    if (data==null && params!=null){
         xhttp.send();
     }
     else
