@@ -144,12 +144,11 @@ function postMessage(message, email, messageBoard) {
     form.append("email", email)
     xmlHttpRequest("POST", "post_message", form, "",callback)
 }
-
+//TODO: Fixa så att meddelanden som hämtas från servern läggs in i rätt ordning. Nu kommer äldst längst upp på väggen (kolla på deras datum från databasen)
 function refreshMessages(email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
 
-        if (response.data.length>messageBoard.childElementCount){
             while (messageBoard.firstChild) {
                 messageBoard.removeChild(messageBoard.firstChild);
             }
@@ -158,15 +157,18 @@ function refreshMessages(email, messageBoard) {
                 var textArea = document.createElement("textarea")
                 textArea.setAttribute("readonly","readonly")
 
-                var text = response.data[i].content
+                var text = response.data[i].message
                 var textNode = document.createTextNode(text)
+                var senderNode = document.createTextNode(email + ": \n")
+                textArea.appendChild(senderNode)
                 textArea.appendChild(textNode)
                 messageBoard.appendChild(textArea)
             }
-        }
+
     }
-    var params = JSON.stringify({ "email": email })
-    xmlHttpRequest("GET", "get_user_messages_by_email", form, params,callback)
+    var emailString = email
+    var params = "email="+emailString
+    xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)
 }
 
 function searchForUser() {
@@ -178,8 +180,8 @@ function searchForUser() {
         if (response.success == true) {
 
         document.getElementById("searchResults").style.visibility="visible"
-        document.getElementById("searchfirstname").innerHTML = response.data.firstname
-        document.getElementById("searchfamilyname").innerHTML = response.data.familyname
+        document.getElementById("searchfirstname").innerHTML = response.data.firstName
+        document.getElementById("searchfamilyname").innerHTML = response.data.familyName
         document.getElementById("searchemail").innerHTML = response.data.email
         document.getElementById("searchgender").innerHTML = response.data.gender
         document.getElementById("searchcountry").innerHTML = response.data.country
@@ -190,8 +192,8 @@ function searchForUser() {
       //  alert(serverMessage.message)
          }
     }
-    var params = JSON.stringify({ "email": email })
-    xmlHttpRequest("GET", "get_user_data_by_email", form, params, callback)
+    var params = "email="+searchEmail
+    xmlHttpRequest("GET", "get_user_data_by_email", null, params, callback)
 
 }
 
@@ -205,9 +207,10 @@ function xmlHttpRequest(method, url, data, params, callback){
     };
     //var params = JSON.stringify({ appoverGUID: approverGUID })
     //var params = "somevariable=somevalue&anothervariable=anothervalue";
+
     xhttp.open(method, "http://localhost:5000/" + url+"?"+params, true);
     xhttp.setRequestHeader("token",sessionStorage.token)
-    if (data==null && params!=null){
+    if (data==null){
         xhttp.send();
     }
     else
