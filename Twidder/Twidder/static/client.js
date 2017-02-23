@@ -231,6 +231,6 @@ function webSocket() {
         console.log('WebSocketMessage ' + message.data);
     }
 
-    
+
 
 }
