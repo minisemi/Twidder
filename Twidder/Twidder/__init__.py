@@ -1,23 +1,33 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request
+from geventwebsocket.handler import WebSocketHandler
+from flask import Flask, request, render_template
+from gevent.pywsgi import WSGIServer
+from flask_sockets import Sockets
 import database_helper
 import json
 import re
 import uuid
-import sys
 
 app = Flask(__name__, static_url_path='')
+sockets = Sockets(app)
+
+@sockets.route('/echo')
+def echo_socket(ws):
+    while True:
+        message = ws.receive()
+        ws.send(message)
+
 
 @app.route('/')
 def root():
     return app.send_static_file('client.html')
+    #return render_template('client.html')
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     email = request.form['email']
     password = request.form['password']
     user = database_helper.find_user(email)
-    #return user + " : " + password
     if user is None:
         return return_message(False, "Sign in failed. No such user.", None)
     if database_helper.check_password(password, email):
@@ -145,13 +155,13 @@ def return_message (success, message, data):
     d = {
         'success': success,
         'message': message,
-        #'data': ['BDFL', 'Developer'],
         'data': data
     }
-    #json_string = '{"success": "Guido", "message":"Rossum", "data":}'
     return json.dumps(d)
 
 if __name__ == '__main__':
     with app.app_context():
         database_helper.init_db()
-    app.run(host="localhost", port=5000, threaded=True)
+    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    http_server.serve_forever()
+    #app.run(host="localhost", port=5000, threaded=True)
