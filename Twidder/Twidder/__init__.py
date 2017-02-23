@@ -13,21 +13,24 @@ sockets = Sockets(app)
 socket_storage = {}
 @sockets.route('/echo')
 def echo_socket(ws):
+    print(socket_storage)
     while True:
         message = ws.receive()
         email = database_helper.check_if_active(message)
-        print(email + message)
+        #print(email + message)
         if socket_storage.get(email):
-            print('remove ' + email + message)
+            #print('remove ' + email + message)
             database_helper.remove_active_user(email)
             try:
-                socket_storage.pop(email)
+                #print("remove from socket")
+
                 socket_storage[email].send('logout')
+                socket_storage.pop(email)
 
             except IOError:
                 print(IOError)
         socket_storage[email] = ws
-
+        print(socket_storage)
 
 
 
@@ -85,12 +88,12 @@ def sign_out():
     if user is "NotActive":
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
-    if socket_storage.get(user):
-            print('remove ' + user + token)
-            try:
-                socket_storage[user].send('logout')
-            except IOError:
-                print(IOError)
+    #if socket_storage.get(user):
+            #print('remove ' + user + token)
+            #try:
+                #socket_storage[user].send('logout')
+           # except IOError:
+                #print(IOError)
     return return_message(True, "Signed out", None)
 
 @app.route('/change_password', methods=['POST'])#put token in header instead
