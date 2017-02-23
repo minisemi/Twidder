@@ -1,4 +1,5 @@
 window.onload = function () {
+
     displayView()
 }
 
@@ -24,6 +25,7 @@ function login() {
     var error = document.getElementById("error")
     var callback = function (response) {
         if (response.success == true) {
+            webSocket();
             checkForToken(response.data, document.getElementById("loginemail").value)
         } else {
             error.innerHTML = response.message
@@ -65,7 +67,8 @@ function checkForToken(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
-        webSocket();
+        //call for websocket connection
+
         displayView()
     } else {
       //  alert("Browser doesn't support web storage")
@@ -220,14 +223,23 @@ function xmlHttpRequest(method, url, data, params, callback){
         xhttp.send(data);
 }
 function webSocket() {
-    var connection = new WebSocket('ws://http://localhost:5000/echo');
-    connection.send('WebSocket connection opened');
+    var connection = new WebSocket('ws://localhost:5000/echo');
+
+    connection.onopen = function(){
+        console.log('websocket open')
+        connection.send(sessionStorage.token);
+    }
 
     connection.onerror = function (error) {
         console.log('WebSocketError ' + error);
     }
 
     connection.onmessage = function (message) {
+        if (message.data == 'logout'){
+            sessionStorage.removeItem("token")
+            sessionStorage.removeItem("email")
+            displayView()
+        }
         console.log('WebSocketMessage ' + message.data);
     }
 

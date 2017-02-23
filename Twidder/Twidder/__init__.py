@@ -10,12 +10,27 @@ import uuid
 
 app = Flask(__name__, static_url_path='')
 sockets = Sockets(app)
-
+socket_storage = {}
 @sockets.route('/echo')
 def echo_socket(ws):
     while True:
         message = ws.receive()
-        ws.send(message)
+        email = database_helper.check_if_active(message)
+        print(email + message)
+        if socket_storage.get(email):
+            print('remove ' + email + message)
+            database_helper.remove_active_user(email)
+            try:
+                socket_storage.pop(email)
+                socket_storage[email].send('logout')
+
+            except IOError:
+                print(IOError)
+        socket_storage[email] = ws
+
+
+
+
 
 
 @app.route('/')
@@ -70,6 +85,12 @@ def sign_out():
     if user is "NotActive":
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
+    if socket_storage.get(user):
+            print('remove ' + user + token)
+            try:
+                socket_storage[user].send('logout')
+            except IOError:
+                print(IOError)
     return return_message(True, "Signed out", None)
 
 @app.route('/change_password', methods=['POST'])#put token in header instead
@@ -160,8 +181,10 @@ def return_message (success, message, data):
     return json.dumps(d)
 
 if __name__ == '__main__':
+
     with app.app_context():
         database_helper.init_db()
     http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
     http_server.serve_forever()
     #app.run(host="localhost", port=5000, threaded=True)
+
