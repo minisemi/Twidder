@@ -31,6 +31,7 @@ function login() {
     }
     var form = new FormData(document.getElementById("login_form"))
     xmlHttpRequest("POST", "sign_in", form, "",callback)
+    //webSocket(sessionStorage.token);
 }
 
 function signUp() {
@@ -64,10 +65,12 @@ function checkForToken(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
+        webSocket();
         displayView()
     } else {
       //  alert("Browser doesn't support web storage")
     }
+
 }
 
 function openTab(tabName) {
@@ -215,4 +218,19 @@ function xmlHttpRequest(method, url, data, params, callback){
     }
     else
         xhttp.send(data);
+}
+function webSocket() {
+    var connection = new WebSocket('ws://http://localhost:5000/echo');
+    connection.send('WebSocket connection opened');
+
+    connection.onerror = function (error) {
+        console.log('WebSocketError ' + error);
+    }
+
+    connection.onmessage = function (message) {
+        console.log('WebSocketMessage ' + message.data);
+    }
+
+    
+
 }
