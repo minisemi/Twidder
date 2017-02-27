@@ -54,7 +54,6 @@ def check_if_active(token):
     email = user['user']
     return email
 
-
 def check_if_active_email(email):
     query = "SELECT user FROM ActiveUsers WHERE user=?"
     user = query_db(query, [email], one=True)
@@ -64,7 +63,7 @@ def check_if_active_email(email):
     return email
 
 def add_active_user(email, token):
-    if check_if_active_email(email) is not "NotActiveA":
+    if check_if_active_email(email) is not "NotActive":
         remove_active_user(email)
     query = "INSERT INTO ActiveUsers VALUES (?, ?)"
     query_db(query, [email, token], one=True)

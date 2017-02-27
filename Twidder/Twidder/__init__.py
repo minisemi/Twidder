@@ -11,6 +11,7 @@ import uuid
 app = Flask(__name__, static_url_path='')
 sockets = Sockets(app)
 socket_storage = {}
+
 @sockets.route('/echo')
 def echo_socket(ws):
     print(socket_storage)
@@ -20,10 +21,9 @@ def echo_socket(ws):
         #print(email + message)
         if socket_storage.get(email):
             #print('remove ' + email + message)
-            database_helper.remove_active_user(email)
+            #database_helper.remove_active_user(email)
             try:
-                #print("remove from socket")
-
+                print("remove from socket")
                 socket_storage[email].send('logout')
                 socket_storage.pop(email)
 
@@ -31,10 +31,6 @@ def echo_socket(ws):
                 print(IOError)
         socket_storage[email] = ws
         print(socket_storage)
-
-
-
-
 
 @app.route('/')
 def root():

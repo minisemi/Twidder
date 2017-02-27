@@ -25,8 +25,8 @@ function login() {
     var error = document.getElementById("error")
     var callback = function (response) {
         if (response.success == true) {
-            webSocket();
-            checkForToken(response.data, document.getElementById("loginemail").value)
+            updateSessionStorage(response.data, document.getElementById("loginemail").value)
+            webSocket()
         } else {
             error.innerHTML = response.message
         }
@@ -63,10 +63,11 @@ function signUp() {
     }
 }
 
-function checkForToken(token, email){
+function updateSessionStorage(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
+        //webSocket().open()
         //call for websocket connection
 
         displayView()
@@ -222,6 +223,7 @@ function xmlHttpRequest(method, url, data, params, callback){
     else
         xhttp.send(data);
 }
+
 function webSocket() {
     var connection = new WebSocket('ws://localhost:5000/echo');
 
@@ -242,7 +244,5 @@ function webSocket() {
         }
         console.log('WebSocketMessage ' + message.data);
     }
-
-
 
 }
