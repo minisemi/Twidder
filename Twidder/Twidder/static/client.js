@@ -136,13 +136,8 @@ function postMessage(message, email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
         if (response.success){
-            var textArea = document.createElement("textarea")
-            textArea.setAttribute("readonly","readonly")
-            var senderNode = document.createTextNode(email + ": \n")
-            var textNode = document.createTextNode(message)
-            textArea.appendChild(senderNode)
-            textArea.appendChild(textNode)
-            messageBoard.insertBefore(textArea, messageBoard.firstChild)
+            loadMessage(message, email, messageBoard)
+
         }
     }
 
@@ -160,21 +155,49 @@ function refreshMessages(email, messageBoard) {
             }
 
             for (var i = 0; i < response.data.length; i++) {
-                var textArea = document.createElement("textarea")
-                textArea.setAttribute("readonly","readonly")
+                var message = response.data[i].message
+                loadMessage(message, email, messageBoard)
 
-                var text = response.data[i].message
-                var textNode = document.createTextNode(text)
-                var senderNode = document.createTextNode(email + ": \n")
-                textArea.appendChild(senderNode)
-                textArea.appendChild(textNode)
-                messageBoard.appendChild(textArea)
             }
 
     }
     var emailString = email
     var params = "email="+emailString
     xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)
+}
+
+function loadMessage(message, email, messageBoard){
+    var textArea = document.createElement("textarea")
+    textArea.setAttribute("class", "messageBox")
+    textArea.setAttribute("readonly","readonly")
+    var senderNode = document.createTextNode(email + ": \n")
+    var textNode = document.createTextNode(message)
+    textArea.appendChild(senderNode)
+    textArea.appendChild(textNode)
+    var messageDiv = document.createElement("div")
+    messageDiv.setAttribute("draggable", true)
+    messageDiv.setAttribute("ondragstart", "drag(event)")
+    messageDiv.setAttribute("class", "messageBox")
+    messageDiv.appendChild(textArea)
+    messageDiv.setAttribute("id", message)
+    messageBoard.insertBefore(messageDiv, messageBoard.firstChild)
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    console.log("target" + ev.target.id)
+    ev.dataTransfer.setData("text", ev.target.id);
+
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text")
+    document.getElementById(ev.target.id).value = data
+
 }
 
 function searchForUser() {

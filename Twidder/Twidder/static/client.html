@@ -75,7 +75,7 @@
     <div class=postMessage>
     <form>
 
-    <textarea rows="10" cols="50" id=message></textarea>
+    <textarea rows="10" cols="50" ondrop="drop(event)" ondragover="allowDrop(event)" id=message ></textarea>
     <button onclick="postMessage('message',sessionStorage.email,'messageBoard');return false">Post</button>
     <button onclick="refreshMessages(sessionStorage.email,'messageBoard');return false">Refresh</button>
     </form>
@@ -104,10 +104,10 @@
                 <div class="form">Email: <p id=searchemail ></p></div>
     </div>
 
-    <div class=postMessage>
+    <div class=postMessage">
     <form>
 
-    <textarea rows="10" cols="50" id=searchmessage></textarea>
+    <textarea rows="10" cols="50" id=searchmessage ></textarea>
     <button onclick="postMessage('searchmessage', document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Post</button>
     <button onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
     </form>
