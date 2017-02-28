@@ -1,9 +1,33 @@
+
+
 window.onload = function () {
     displayView()
 }
 
+
+//page.base('/static');
+
+page('/', displayView);
+
+
+window.onbeforeunload = function(e){
+    console.log(location.pathname)
+    page(location.pathname, openTab("Home"));
+    return "Are you sure you want to leave this page and sign out?"
+};
+
+page();
+
+function callOnPage(tabName){
+    page('/'+tabName, function(){
+  console.log("called on " + tabName)
+        openTab(tabName)
+});
+}
+
 function displayView() {
     if (sessionStorage.token == undefined){
+        window.history.pushState("welcome", "welcome", "Welcome")
         return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
         return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
@@ -100,6 +124,9 @@ function openTab(tabName) {
     }
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
+    //page('/' + tabName)
+    //window.location.pathname = tabName;
+    //window.history.pushState(tabName, tabName, tabName)
 
 }
 
@@ -160,17 +187,18 @@ function refreshMessages(email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
 
-            while (messageBoard.firstChild) {
-                messageBoard.removeChild(messageBoard.firstChild);
-            }
-
+        while (messageBoard.firstChild) {
+            messageBoard.removeChild(messageBoard.firstChild);
+        }
+        if (response.data != null) {
             for (var i = 0; i < response.data.length; i++) {
                 var message = response.data[i].message
                 loadMessage(message, email, messageBoard)
 
-            }
+             }
 
-    }
+            }
+        }
     var emailString = email
     var params = "email="+emailString
     xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)

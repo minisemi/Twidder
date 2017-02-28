@@ -32,10 +32,13 @@ def echo_socket(ws):
         socket_storage[email] = ws
         print(socket_storage)
 
-@app.route('/')
-def root():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def root(path):
     return app.send_static_file('client.html')
     #return render_template('client.html')
+
+
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
@@ -50,7 +53,7 @@ def sign_in():
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
-@app.route('/sign_up', methods=['POST'])
+@app.route('/sign_up', methods=['POST'])#/api/sign...
 def sign_up():
     email = request.form['email']
     firstName = request.form['firstName']
