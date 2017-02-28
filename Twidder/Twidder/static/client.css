@@ -2,12 +2,8 @@ body{
     background-color: cornflowerblue;
 }
 
-.mainDiv{
-    margin: auto;
-    width: 600px;
-    height: 400px;
-    margin-top: 100px;
-    text-align: center;
+.topRow{
+    margin-top: 50px;
 }
 
 .leftBox{
@@ -15,7 +11,7 @@ body{
     width: 340px;
     height: inherit;
     background-color: aliceblue;
-    float:left;
+    margin: auto;
 }
 
 .searchBox{
@@ -34,7 +30,6 @@ body{
 
 }
 
-
 input[type="submit"]{
     height: auto;
 }
@@ -42,7 +37,6 @@ input[type="submit"]{
 input{
     float:right;
     height: 15px;
-
 }
 
 .messageBox{
@@ -53,18 +47,16 @@ input{
     margin: 4px;
 }
 
-
-
 .rightBox{
     border: 1px solid black;
-    float: right;
     background-color: white;
     height: 100px;
     width: 250px;
     text-align: left;
-
-
+    clear: right;
+    margin: auto;
 }
+
 .bottomBox{
     height: 290px;
     margin-top: 8px;
