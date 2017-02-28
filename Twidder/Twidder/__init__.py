@@ -84,6 +84,7 @@ def sign_out():
     if user is "NotActive":
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
+    socket_storage.pop(user)
     #if socket_storage.get(user):
             #print('remove ' + user + token)
             #try:

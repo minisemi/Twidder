@@ -10,6 +10,16 @@ function displayView() {
     }
 }
 
+document.addEventListener('DOMContentLoaded',function(){
+    setTimeout(function() {
+        if (sessionStorage.token == undefined){
+    } else {
+        document.getElementById("homeTab").click();
+    }
+    },10);
+
+    });
+
 function logout(){
 
     var callback = function () {

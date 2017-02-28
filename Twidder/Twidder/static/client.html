@@ -17,10 +17,10 @@
         </div>
 
         <div class="rightBox">
-            <form id="login_form">
+            <form id="login_form" onsubmit="login();return false">
                 <div class="form">Email: <input type="email" name="email" id=loginemail required title="Correct email format" autocomplete="on"></div>
                 <div class="form">Password: <input type = "password" name= "password" id=loginpassword minLength=5 required autocomplete="on"></div>
-            <div class=form>Login<button id="loginButton" onclick="login();return false">Login</button></div>
+            <div class=form>Login<input id="loginButton" type="submit" class="btn btn-lg btn-primary" like="Login"></div>
             </form>
 
 
@@ -42,7 +42,7 @@
                 <div class="form">Password: <input type = "password" name= "password" id=password pattern=".{5,}" title="Min 5 characters" required></div>
                 <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw pattern=".{5,}" title="Min 5 characters" required></div>
 
-            <div class="form">SignUp<input type=submit id="signupButton">SignUp</div>
+            <div class="form">SignUp<input type=submit id="signupButton" class="btn btn-lg btn-primary" like="Sign up"></div>
             </form>
         </div>
         <p id=error></p>
@@ -55,7 +55,7 @@
 
         </div>
         <ul class="tab">
-  <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Home');displayUserData();refreshMessages(sessionStorage.email,'messageBoard')">Home</a></li>
+  <li><a href="javascript:void(0)" id="homeTab" class="tablinks" onclick="openTab('Home');displayUserData();refreshMessages(sessionStorage.email,'messageBoard')">Home</a></li>
   <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Browse')">Browse</a></li>
   <li><a href="javascript:void(0)" class="tablinks" onclick="openTab('Account')">Account</a></li>
 </ul>
@@ -76,8 +76,8 @@
     <form>
 
     <textarea rows="10" cols="50" ondrop="drop(event)" ondragover="allowDrop(event)" id=message ></textarea>
-    <button onclick="postMessage('message',sessionStorage.email,'messageBoard');return false">Post</button>
-    <button onclick="refreshMessages(sessionStorage.email,'messageBoard');return false">Refresh</button>
+    <button class="btn btn-lg btn-primary" onclick="postMessage('message',sessionStorage.email,'messageBoard');return false">Post</button>
+    <button class="btn btn-lg btn-primary" onclick="refreshMessages(sessionStorage.email,'messageBoard');return false">Refresh</button>
     </form>
     </div>
     <div class = messageBoard>
@@ -91,7 +91,7 @@
   <div class = searchBox>
   <form id=searchForm>
   <input type=email id=searchEmail required float=left></input>
-  <button id=searchButton onclick="searchForUser();return false" float=left>Search</button>
+  <button class="btn btn-lg btn-primary" id=searchButton onclick="searchForUser();return false" float=left>Search</button>
   </form>
   </div>
   <div id=searchResults style="visibility:hidden">
@@ -108,8 +108,8 @@
     <form>
 
     <textarea rows="10" cols="50" id=searchmessage ></textarea>
-    <button onclick="postMessage('searchmessage', document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Post</button>
-    <button onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
+    <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Post</button>
+    <button class="btn btn-lg btn-primary" onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
     </form>
     </div>
     <div class = messageBoard>
@@ -125,10 +125,10 @@
   <div class="form">Old pw<input type="password" name="old_password" id="changePasswordOld" minLength=5 required></div>
   <div class="form">New pw<input type="password" name="new_password" id="changePasswordNew1" minLength=5 required></div>
   <div class="form">Repeat new pw<input type="password" name="repeat_new_password" id="changePasswordNew2" minLength=5 required></div>
-  <div class="form"><input type="submit">Change pw</div>
+  <div class="form"><input class="btn btn-lg btn-primary" type="submit" like="Change pw"></div>
   </form>
   <p id=passwordText></p>
-  <button onclick="logout()">Logout</button>
+  <button class="btn btn-lg btn-primary" onclick="logout()">Logout</button>
 </div>
 
         </script>
