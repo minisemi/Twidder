@@ -20,7 +20,7 @@
             <form id="login_form" onsubmit="login();return false">
                 <div class="form">Email: <input type="email" name="email" id=loginemail required title="Correct email format" autocomplete="on"></div>
                 <div class="form">Password: <input type = "password" name= "password" id=loginpassword minLength=5 required autocomplete="on"></div>
-            <div class=form>Login<input id="loginButton" type="submit" class="btn btn-lg btn-primary" like="Login"></div>
+            <div class=form><input id="loginButton" type="submit" class="btn btn-lg btn-primary" value="Login"></div>
             </form>
 
 
@@ -42,7 +42,7 @@
                 <div class="form">Password: <input type = "password" name= "password" id=password pattern=".{5,}" title="Min 5 characters" required></div>
                 <div class="form">Repeat PSW: <input type = "password" name= "repeatpsw" id=repeatpsw pattern=".{5,}" title="Min 5 characters" required></div>
 
-            <div class="form">SignUp<input type=submit id="signupButton" class="btn btn-lg btn-primary" like="Sign up"></div>
+            <div class="form"><input type=submit id="signupButton" class="btn btn-lg btn-primary" value="Sign up"></div>
             </form>
         </div>
         <p id=error></p>
@@ -125,7 +125,7 @@
   <div class="form">Old pw<input type="password" name="old_password" id="changePasswordOld" minLength=5 required></div>
   <div class="form">New pw<input type="password" name="new_password" id="changePasswordNew1" minLength=5 required></div>
   <div class="form">Repeat new pw<input type="password" name="repeat_new_password" id="changePasswordNew2" minLength=5 required></div>
-  <div class="form"><input class="btn btn-lg btn-primary" type="submit" like="Change pw"></div>
+  <div class="form"><input class="btn btn-lg btn-primary" type="submit" value="Change pw"></div>
   </form>
   <p id=passwordText></p>
   <button class="btn btn-lg btn-primary" onclick="logout()">Logout</button>
