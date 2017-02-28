@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Twidder</title>
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-       <link href="client.css" type="text/css" rel="stylesheet">
-       <script src="client.js" type="text/javascript"></script>
-       <script src="serverstub.js" type="text/javascript"></script>
-        <script type="text/view" id="welcome">
+    <title>Twidder</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="client.css" type="text/css" rel="stylesheet">
+    <script src="client.js" type="text/javascript"></script>
+    <script src="serverstub.js" type="text/javascript"></script>
+    <script type="text/view" id="welcome">
 
-    <div class="mainDiv">
-        <div class="leftBox">
-        <img src="wimage.png">
-        </div>
-
-        <div class="rightBox">
+        <div class="container">
+            <div class="row topRow">
+                <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-2">
+                    <div class="leftBox">
+                        <img src="wimage.png">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    <div class="rightBox">
             <form id="login_form" onsubmit="login();return false">
                 <div class="form">Email: <input type="email" name="email" id=loginemail required title="Correct email format" autocomplete="on"></div>
                 <div class="form">Password: <input type = "password" name= "password" id=loginpassword minLength=5 required autocomplete="on"></div>
             <div class=form><input id="loginButton" type="submit" class="btn btn-lg btn-primary" value="Login"></div>
             </form>
 
-
         </div>
-        <div class="bottomBox rightBox" onsubmit="signUp();return false">
+        <div class="rightBox bottomBox" onsubmit="signUp();return false">
             <p>Sign up here</p>
             <form id="signup_form">
                 <div class="form">First name: <input type="text" name="firstName" id="firstname" required></div>
@@ -45,11 +47,15 @@
             <div class="form"><input type=submit id="signupButton" class="btn btn-lg btn-primary" value="Sign up"></div>
             </form>
         </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+        </div>
+        </div>
         <p id=error></p>
-    </div>
 
     </script>
-        <script type="text/view" id="profile">
+    <script type="text/view" id="profile">
 
         <div class="mainDiv_profile">
 
@@ -132,8 +138,8 @@
 </div>
 
         </script>
-    </head>
-    <body>
-    <div id="currentView"></div>
-    </body>
+</head>
+<body>
+<div id="currentView"></div>
+</body>
 </html>
