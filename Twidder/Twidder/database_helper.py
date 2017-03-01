@@ -36,7 +36,7 @@ def remove_user(email):
 
 
 def get_posts(email):
-    query = "SELECT message FROM Posts WHERE receiver=?"
+    query = "SELECT message, sender FROM Posts WHERE receiver=?"
     return query_db(query, [email])
 
 

@@ -32,10 +32,13 @@ def echo_socket(ws):
         socket_storage[email] = ws
         print(socket_storage)
 
-@app.route('/')
+#@app.route('/', defaults={'path': ''})
+@app.route('/')#<path:path>')
 def root():
     return app.send_static_file('client.html')
     #return render_template('client.html')
+
+
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
@@ -50,7 +53,7 @@ def sign_in():
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
-@app.route('/sign_up', methods=['POST'])
+@app.route('/sign_up', methods=['POST'])#/api/sign...
 def sign_up():
     email = request.form['email']
     firstName = request.form['firstName']
@@ -161,6 +164,7 @@ def get_user_messages_by_email():
 def post_message():
     token = request.headers['token']
     message = request.form['message']
+    sender = request.form['sender']
     email = request.form['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
@@ -169,7 +173,7 @@ def post_message():
     if receiver is None:
         return return_message(False, "ReceiverNotFound", None)
 
-    database_helper.create_post(user, email,message)
+    database_helper.create_post(sender, email, message)
     return return_message(True, "MessagePosted", None)
 
 def return_message (success, message, data):

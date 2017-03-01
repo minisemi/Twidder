@@ -1,5 +1,27 @@
+
+
 window.onload = function () {
     displayView()
+}
+
+
+
+page('/', displayView);
+
+
+/*window.onbeforeunload = function(e){
+    console.log(location.pathname)
+    page(location.pathname, openTab("Home"));
+    return "Are you sure you want to leave this page and sign out?"
+};*/
+
+page();
+
+function callOnPage(tabName){
+    page('/'+tabName, function(){
+  console.log("called on " + tabName)
+        openTab(tabName)
+});
 }
 
 function displayView() {
@@ -18,6 +40,8 @@ function logout(){
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("email")
         displayView()
+        page('/')
+
     }
     xmlHttpRequest("POST", "sign_out", null, "",callback)
 }
@@ -92,6 +116,9 @@ function openTab(tabName) {
     }
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
+    //page('/' + tabName)
+    //window.location.pathname = tabName;
+    //window.history.pushState(tabName, tabName, tabName)
 
 }
 
@@ -132,19 +159,25 @@ function displayUserData(){
     xmlHttpRequest("GET", "get_user_data_by_token", null, "",callback)
 }
 
-function postMessage(message, email, messageBoard) {
+function postMessage(message, email, sender, messageBoard) {
+    refreshMessages(email, messageBoard)
     var form = new FormData()
     var message = document.getElementById(message).value
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
         if (response.success){
-            loadMessage(message, email, messageBoard)
+
+            console.log(sender)
+            loadMessage(message, email, messageBoard, sender)
+
 
         }
     }
 
     form.append("message", message)
     form.append("email", email)
+    form.append("sender", sender)
+    console.log(form.get("email"))
     xmlHttpRequest("POST", "post_message", form, "",callback)
 }
 function refreshMessages(email, messageBoard) {
@@ -157,8 +190,10 @@ function refreshMessages(email, messageBoard) {
             }
 
             for (var i = 0; i < response.data.length; i++) {
+                console.log(response.data)
                 var message = response.data[i].message
-                loadMessage(message, email, messageBoard)
+                var sender = response.data[i].sender
+                loadMessage(message, email, messageBoard, sender)
 
             }
         }
@@ -169,11 +204,11 @@ function refreshMessages(email, messageBoard) {
     xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)
 }
 
-function loadMessage(message, email, messageBoard){
+function loadMessage(message, email, messageBoard, sender){
     var textArea = document.createElement("textarea")
     textArea.setAttribute("class", "messageBox")
     textArea.setAttribute("readonly","readonly")
-    var senderNode = document.createTextNode(email + ": \n")
+    var senderNode = document.createTextNode(sender + ": \n")
     var textNode = document.createTextNode(message)
     textArea.appendChild(senderNode)
     textArea.appendChild(textNode)
