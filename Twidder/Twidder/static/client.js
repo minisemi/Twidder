@@ -4,21 +4,13 @@ window.onload = function () {
 
 function displayView() {
     if (sessionStorage.token == undefined){
-        return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
+         document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
-        return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
+         document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
+         document.getElementById("homeTab").click();
     }
 }
 
-document.addEventListener('DOMContentLoaded',function(){
-    setTimeout(function() {
-        if (sessionStorage.token == undefined){
-    } else {
-        document.getElementById("homeTab").click();
-    }
-    },10);
-
-    });
 
 function logout(){
 
@@ -155,11 +147,11 @@ function postMessage(message, email, messageBoard) {
     form.append("email", email)
     xmlHttpRequest("POST", "post_message", form, "",callback)
 }
-//TODO: Fixa så att meddelanden som hämtas från servern läggs in i rätt ordning. Nu kommer äldst längst upp på väggen (kolla på deras datum från databasen)
 function refreshMessages(email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
 
+        if (response.success == true) {
             while (messageBoard.firstChild) {
                 messageBoard.removeChild(messageBoard.firstChild);
             }
@@ -169,6 +161,7 @@ function refreshMessages(email, messageBoard) {
                 loadMessage(message, email, messageBoard)
 
             }
+        }
 
     }
     var emailString = email
@@ -228,6 +221,7 @@ function searchForUser() {
         refreshMessages(searchEmail,"searchmessageBoard")
 
         } else {
+            document.getElementById("searchResults").style.visibility="hidden"
       //  alert(serverMessage.message)
          }
     }
