@@ -164,6 +164,7 @@ def get_user_messages_by_email():
 def post_message():
     token = request.headers['token']
     message = request.form['message']
+    sender = request.form['sender']
     email = request.form['email']
     user = database_helper.check_if_active(token)
     if user is "NotActive":
@@ -172,7 +173,7 @@ def post_message():
     if receiver is None:
         return return_message(False, "ReceiverNotFound", None)
 
-    database_helper.create_post(user, email,message)
+    database_helper.create_post(sender, email, message)
     return return_message(True, "MessagePosted", None)
 
 def return_message (success, message, data):
