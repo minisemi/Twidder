@@ -5,16 +5,15 @@ window.onload = function () {
 }
 
 
-//page.base('/static');
 
 page('/', displayView);
 
 
-window.onbeforeunload = function(e){
+/*window.onbeforeunload = function(e){
     console.log(location.pathname)
     page(location.pathname, openTab("Home"));
     return "Are you sure you want to leave this page and sign out?"
-};
+};*/
 
 page();
 
@@ -27,7 +26,6 @@ function callOnPage(tabName){
 
 function displayView() {
     if (sessionStorage.token == undefined){
-        window.history.pushState("welcome", "welcome", "Welcome")
         return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
         return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML

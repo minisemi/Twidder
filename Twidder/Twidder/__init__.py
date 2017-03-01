@@ -32,9 +32,9 @@ def echo_socket(ws):
         socket_storage[email] = ws
         print(socket_storage)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def root(path):
+#@app.route('/', defaults={'path': ''})
+@app.route('/')#<path:path>')
+def root():
     return app.send_static_file('client.html')
     #return render_template('client.html')
 
