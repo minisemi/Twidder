@@ -32,6 +32,21 @@ def echo_socket(ws):
         socket_storage[email] = ws
         print(socket_storage)
 
+
+
+@app.route('/Home')
+def home():
+    return root()
+
+@app.route('/Browse')
+def browse():
+    return root()
+
+@app.route('/Account')
+def account():
+    return root()
+
+
 #@app.route('/', defaults={'path': ''})
 @app.route('/')#<path:path>')
 def root():
