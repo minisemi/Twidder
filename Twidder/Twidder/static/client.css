@@ -14,14 +14,24 @@ body{
     margin: auto;
 }
 
+textarea{
+    resize: none;
+}
+
+.centered{
+    margin: auto!important;
+    text-align: center;
+    width: 200px;
+    height: 50px;
+}
+
 .searchBox{
-    float: left;
     border: 1px solid #ccc;
 }
 
 .userDataBox{
     border: 1px solid #ccc;
-    float:left;
+    float:right;
     clear: left;
 }
 
@@ -43,8 +53,9 @@ input{
    resize: none;
     width: 200px;
     height: 50px;
-    float: left;
-    margin: 4px;
+    float: none;
+    margin: auto;
+
 }
 
 .rightBox{
@@ -78,7 +89,7 @@ select{
 }
 
 button{
-    float: right;
+    /* float: right; */
 }
 
 p{
@@ -90,6 +101,16 @@ p{
     font-size: small;
     height: 20px!important;
     padding-top: 0px;
+    float: none;
+}
+
+.verticalList{
+    clear: both;
+    margin: auto;
+}
+
+.vertical{
+    clear: left;
 }
 
 /* Style the list */

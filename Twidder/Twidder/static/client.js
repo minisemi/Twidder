@@ -7,7 +7,7 @@ window.onload = function () {
 
 
 
-page('/', displayView);
+//page('/', displayView);
 
 
 /*window.onbeforeunload = function(e){
@@ -16,32 +16,24 @@ page('/', displayView);
     return "Are you sure you want to leave this page and sign out?"
 };*/
 
-page();
+//page();
 
 function callOnPage(tabName){
-    page('/'+tabName, function(){
+    //page('/'+tabName, function(){
   console.log("called on " + tabName)
         openTab(tabName)
-});
+//});
 }
 
 function displayView() {
     if (sessionStorage.token == undefined){
-        return document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
+         document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
-        return document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
+         document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
+         document.getElementById("homeTab").click();
     }
 }
 
-document.addEventListener('DOMContentLoaded',function(){
-    setTimeout(function() {
-        if (sessionStorage.token == undefined){
-    } else {
-        document.getElementById("homeTab").click();
-    }
-    },10);
-
-    });
 
 function logout(){
 
@@ -49,7 +41,7 @@ function logout(){
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("email")
         displayView()
-        page('/')
+        //page('/')
 
     }
     xmlHttpRequest("POST", "sign_out", null, "",callback)
@@ -189,25 +181,25 @@ function postMessage(message, email, sender, messageBoard) {
     console.log(form.get("email"))
     xmlHttpRequest("POST", "post_message", form, "",callback)
 }
-//TODO: Fixa så att meddelanden som hämtas från servern läggs in i rätt ordning. Nu kommer äldst längst upp på väggen (kolla på deras datum från databasen)
 function refreshMessages(email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
 
-        while (messageBoard.firstChild) {
-            messageBoard.removeChild(messageBoard.firstChild);
-        }
-        if (response.data != null) {
+        if (response.success == true) {
+            while (messageBoard.firstChild) {
+                messageBoard.removeChild(messageBoard.firstChild);
+            }
+
             for (var i = 0; i < response.data.length; i++) {
                 console.log(response.data)
                 var message = response.data[i].message
                 var sender = response.data[i].sender
                 loadMessage(message, email, messageBoard, sender)
 
-             }
-
             }
         }
+
+    }
     var emailString = email
     var params = "email="+emailString
     xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)
@@ -265,6 +257,7 @@ function searchForUser() {
         refreshMessages(searchEmail,"searchmessageBoard")
 
         } else {
+            document.getElementById("searchResults").style.visibility="hidden"
       //  alert(serverMessage.message)
          }
     }
