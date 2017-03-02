@@ -254,7 +254,7 @@ function searchForUser() {
         document.getElementById("searchResults").style.visibility="visible"
         document.getElementById("searchfirstname").innerHTML = response.data.firstName
         document.getElementById("searchfamilyname").innerHTML = response.data.familyName
-        document.getElementById("searchemail").innerHTML = response.data.email
+        document.getElementById("displaySearchEmail").innerHTML = response.data.email
         document.getElementById("searchgender").innerHTML = response.data.gender
         document.getElementById("searchcountry").innerHTML = response.data.country
         document.getElementById("searchcity").innerHTML = response.data.city
