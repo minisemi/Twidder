@@ -7,7 +7,7 @@ window.onload = function () {
 
 
 
-//page('/', displayView);
+page('/', displayView);
 
 
 /*window.onbeforeunload = function(e){
@@ -16,21 +16,23 @@ window.onload = function () {
     return "Are you sure you want to leave this page and sign out?"
 };*/
 
-//page();
 
-function callOnPage(tabName){
-    //page('/'+tabName, function(){
+page();
+
+function callOnPage(tabName, tabID){
+    page('/'+tabName, function(){
   console.log("called on " + tabName)
-        openTab(tabName)
-//});
+        openTab(tabName, tabID)
+});
 }
 
 function displayView() {
+
     if (sessionStorage.token == undefined){
          document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
          document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
-         document.getElementById("homeTab").click();
+         document.getElementById(sessionStorage.currentTab).click();
     }
 }
 
@@ -41,7 +43,7 @@ function logout(){
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("email")
         displayView()
-        //page('/')
+        page('/')
 
     }
     xmlHttpRequest("POST", "sign_out", null, "",callback)
@@ -59,6 +61,7 @@ function login() {
     }
     var form = new FormData(document.getElementById("login_form"))
     xmlHttpRequest("POST", "sign_in", form, "",callback)
+    page('/')
     //webSocket(sessionStorage.token);
 }
 
@@ -93,6 +96,7 @@ function updateSessionStorage(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
+        sessionStorage.setItem("currentTab", "homeTab")
         //webSocket().open()
         //call for websocket connection
 
@@ -103,7 +107,7 @@ function updateSessionStorage(token, email){
 
 }
 
-function openTab(tabName) {
+function openTab(tabName, tabID) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
 
@@ -117,6 +121,7 @@ function openTab(tabName) {
     }
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
+    sessionStorage.currentTab = tabID
     //page('/' + tabName)
     //window.location.pathname = tabName;
     //window.history.pushState(tabName, tabName, tabName)

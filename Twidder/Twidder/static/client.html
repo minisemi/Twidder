@@ -65,9 +65,9 @@
 
         </div>
         <ul class="tab">
-  <li><a href="#" id="homeTab" class="tablinks" onclick="callOnPage('Home');displayUserData();refreshMessages(sessionStorage.email,'messageBoard')">Home</a></li>
-  <li><a href="#" class="tablinks" onclick="callOnPage('Browse')">Browse</a></li>
-  <li><a href="#" class="tablinks" onclick="callOnPage('Account')">Account</a></li>
+  <li><a href="Home" id="homeTab" class="tablinks" onclick="callOnPage('Home','homeTab');displayUserData();refreshMessages(sessionStorage.email,'messageBoard')">Home</a></li>
+  <li><a href="Browse" id="browseTab" class="tablinks" onclick="callOnPage('Browse','browseTab')">Browse</a></li>
+  <li><a href="Account" id="accountTab" class="tablinks" onclick="callOnPage('Account','accountTab')">Account</a></li>
 </ul>
 
 <div id="Home" class="tabcontent"  >
@@ -97,7 +97,7 @@
             <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="centered">
-            <button class="btn btn-lg btn-primary" onclick="postMessage('message',sessionStorage.email,'messageBoard');return false">Post</button>
+            <button class="btn btn-lg btn-primary" onclick="postMessage('message',sessionStorage.email,sessionStorage.email,'messageBoard');return false">Post</button>
             <button class="btn btn-lg btn-primary" onclick="refreshMessages(sessionStorage.email,'messageBoard');return false">Refresh</button>
                 </div>
                 </div>
@@ -153,7 +153,7 @@
                 <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="centered">
-    <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Post</button>
+    <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('searchEmail').value,sessionStorage.email, 'searchmessageBoard');return false">Post</button>
     <button class="btn btn-lg btn-primary" onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
     </div>
     </div>
