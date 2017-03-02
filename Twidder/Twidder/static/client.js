@@ -170,7 +170,6 @@ function postMessage(message, email, sender, messageBoard) {
             console.log(sender)
             loadMessage(message, email, messageBoard, sender)
 
-
         }
     }
 
