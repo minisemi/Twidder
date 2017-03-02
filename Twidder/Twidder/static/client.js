@@ -6,7 +6,7 @@ window.onload = function () {
 
 
 
-page('/', displayView);
+//page('/', displayView);
 
 
 /*window.onbeforeunload = function(e){
@@ -15,13 +15,13 @@ page('/', displayView);
     return "Are you sure you want to leave this page and sign out?"
 };*/
 
-page();
+//page();
 
 function callOnPage(tabName){
-    page('/'+tabName, function(){
+    //page('/'+tabName, function(){
   console.log("called on " + tabName)
         openTab(tabName)
-});
+//});
 }
 
 function displayView() {
@@ -40,7 +40,7 @@ function logout(){
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("email")
         displayView()
-        page('/')
+        //page('/')
 
     }
     xmlHttpRequest("POST", "sign_out", null, "",callback)
