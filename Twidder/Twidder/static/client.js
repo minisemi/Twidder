@@ -61,8 +61,6 @@ function login() {
     }
     var form = new FormData(document.getElementById("login_form"))
     xmlHttpRequest("POST", "sign_in", form, "",callback)
-    page('/')
-    //webSocket(sessionStorage.token);
 }
 
 function signUp() {
