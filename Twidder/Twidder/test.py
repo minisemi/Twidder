@@ -38,7 +38,8 @@ class test_suite (unittest.TestCase):
         textArea.send_keys(message)
         post_button = driver.find_element_by_xpath('//*[@id="Home"]/div/div[3]/div/div/button[1]')
         post_button.click()
-        assert message in driver.find_element_by_xpath('//*[@id="fewfwef"]/textarea').text
+        time.sleep(3)
+        assert message in driver.find_element_by_xpath('//*[@id="' + message + '"]/textarea').text
         refresh_button = driver.find_element_by_xpath('//*[@id="Home"]/div/div[3]/div/div/button[2]')
         refresh_button.click()
 
