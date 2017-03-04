@@ -279,7 +279,7 @@ function xmlHttpRequest(method, url, data, params, callback){
     //var params = JSON.stringify({ appoverGUID: approverGUID })
     //var params = "somevariable=somevalue&anothervariable=anothervalue";
 
-    xhttp.open(method, "http://localhost:5000/" + url+"?"+params, true);
+    xhttp.open(method, "http://localhost:7000/" + url+"?"+params, true);
     xhttp.setRequestHeader("token",sessionStorage.token)
     if (data==null){
         xhttp.send();
