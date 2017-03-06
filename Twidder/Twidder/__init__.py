@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
     with app.app_context():
         database_helper.init_db()
-    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    http_server = WSGIServer(('', 7000), app, handler_class=WebSocketHandler)
     http_server.serve_forever()
     #app.run(host="localhost", port=5000, threaded=True)
 

@@ -136,7 +136,7 @@ class test_suite (unittest.TestCase):
             WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="passwordText"]')))
         finally:
-            assert 'Wrong password' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
+            assert 'user' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
         old_pw.clear()
         old_pw.send_keys('aaaaa')
         try:

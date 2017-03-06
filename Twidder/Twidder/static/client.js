@@ -289,7 +289,7 @@ function xmlHttpRequest(method, url, data, params, callback){
 }
 
 function webSocket() {
-    var connection = new WebSocket('ws://localhost:5000/echo');
+    var connection = new WebSocket('ws://localhost:7000/echo');
 
     connection.onopen = function(){
         console.log('websocket open')
