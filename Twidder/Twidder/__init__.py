@@ -116,13 +116,15 @@ def change_password():
     token = request.headers['token']
     old_password = request.form['old_password']
     new_password = request.form['new_password']
-    if len(new_password) < 5 or new_password == old_password:
-        return return_message(False, "Invalid new password", None)
     user = database_helper.check_if_active(token)
     if user is "NotActive":
-        return return_message(False, "User not active", None)         #Last parameter left out, insert null if not working
+        return return_message(False, "User not active", None)
     if database_helper.check_password(old_password, user) is False:
         return return_message(False, "Wrong password", user)
+    if len(new_password) < 5 or new_password == old_password:
+        return return_message(False, "Invalid new password", None)
+            #Last parameter left out, insert null if not working
+
     database_helper.update_password(new_password, user)
     return return_message(True, "Successfully changed password", None)
 

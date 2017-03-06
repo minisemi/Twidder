@@ -15,8 +15,13 @@ class test_suite (unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome(path)
         self.driver.get('localhost:7000')
-        time.sleep(3)
 
+        try:
+            WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="currentView"]/div/div[1]/div[1]/div/img'))
+            )
+        except NoSuchElementException:
+            print('Timed out')
 
     def test_log_in(self):
         driver = self.driver
@@ -129,21 +134,59 @@ class test_suite (unittest.TestCase):
         #test with wrong password
         old_pw.send_keys('hejejejeh')
         new_pw1.send_keys('newpw')
-        new_pw2.send_keys('newpw1')
+        new_pw2.send_keys('newpw')
         button = driver.find_element_by_xpath('//*[@id="changePwForm"]/div[4]/div/div/input')
         button.click()
         try:
             WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="passwordText"]')))
         finally:
-            assert 'user' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
+            assert 'Wrong password' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
         old_pw.clear()
+        new_pw2.clear()
         old_pw.send_keys('aaaaa')
+        new_pw2.send_keys('different')
+        button.click()
         try:
             WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="passwordText"]')))
         finally:
+            print('text: ' + driver.find_element_by_xpath('//*[@id="passwordText"]').text)
             assert 'Repeat password failed' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
+
+        new_pw2.clear()
+        new_pw2.send_keys('newpw')
+        button.click()
+        try:
+            WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="passwordText"]')))
+        finally:
+            assert 'Successfully changed password' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
+        driver.find_element_by_xpath('//*[@id="changePwForm"]/div[4]/div/div/button').click()
+        try:
+            WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="currentView"]/div/div[1]/div[1]/div/img'))
+            )
+        except NoSuchElementException:
+            print('Timed out')
+        self.log_in_help(driver, 'matilda@gmail.com', 'newpw')
+
+        #changing back pw for other tests
+        driver.find_element_by_xpath('//*[@id="accountTab"]').click()
+        try:
+            WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="Account"]/div/div[1]/div/h3'))
+            )
+        except NoSuchElementException:
+            print('Timed out')
+        old_pw = driver.find_element_by_xpath('//*[@id="changePasswordOld"]')
+        new_pw1 = driver.find_element_by_xpath('//*[@id="changePasswordNew1"]')
+        new_pw2 = driver.find_element_by_xpath('//*[@id="changePasswordNew2"]')
+        #test with wrong password
+        old_pw.send_keys('newpw')
+        new_pw1.send_keys('aaaaa')
+        new_pw2.send_keys('aaaaa')
+        driver.find_element_by_xpath('//*[@id="changePwForm"]/div[4]/div/div/input').click()
 
 
     def try_dupe(self, driver, email, button):
@@ -207,6 +250,7 @@ class test_suite (unittest.TestCase):
         email.send_keys(email_string)
         pw.send_keys(pw_string)
         login_button.click()
+        time.sleep(1)
         try:
             WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="useremail"]')))
