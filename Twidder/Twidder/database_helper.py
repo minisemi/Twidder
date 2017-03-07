@@ -16,6 +16,17 @@ def find_user(email):
         return None
     return user
 
+def update_page_views(user):
+    query = "UPDATE Users SET pageViews = pageViews + 1 WHERE email = ?"
+    query_db(query, [user], one=True)
+
+def get_posts_count(user):
+    query = "SELECT COUNT(message) FROM Posts WHERE receiver=?"
+    return query_db(query, [user], one=True)
+
+def get_views_count(user):
+    query = "SELECT pageViews FROM Users WHERE user=?"
+    return query_db(query, [user], one=True)
 
 def remove_active_user(user):
     query = "DELETE FROM ActiveUsers WHERE user=?"
@@ -23,8 +34,8 @@ def remove_active_user(user):
 
 
 def add_user(email, firstName, familyName, password, gender, city, country):
-    query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?)"          #Do we need to specify the database?
-    query_db(query, [email, firstName, familyName, password, gender, city, country], one=True)
+    query = "INSERT INTO Users VALUES (?,?,?,?,?,?,?,?)"          #Do we need to specify the database?
+    query_db(query, [email, firstName, familyName, password, gender, city, country, 0], one=True)
 
 
 def remove_user(email):

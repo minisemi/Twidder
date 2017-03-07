@@ -20,17 +20,17 @@ def echo_socket(ws):
         email = database_helper.check_if_active(message)
         #print(email + message)
         if socket_storage.get(email):
-            #print('remove ' + email + message)
-            #database_helper.remove_active_user(email)
             try:
                 print("remove from socket")
-                socket_storage[email].send('logout')
+                socket_storage[email].send(return_message(True, 'logout', None))
                 socket_storage.pop(email)
 
             except IOError:
                 print(IOError)
         socket_storage[email] = ws
-        print(socket_storage)
+        for socket in socket_storage:
+            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+
 
 
 
@@ -95,6 +95,8 @@ def sign_up():
     database_helper.add_user(email, firstName, familyName, password, gender, city, country)
     return return_message(True, "Signed up", None)
 
+
+
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
     token = request.headers['token']
@@ -110,6 +112,7 @@ def sign_out():
            # except IOError:
                 #print(IOError)
     return return_message(True, "Signed out", None)
+
 
 @app.route('/change_password', methods=['POST'])#put token in header instead
 def change_password():
@@ -147,8 +150,13 @@ def get_user_data_by_email():#add param here
     user = database_helper.find_user(email)
     if user is None:
         return return_message(False, "No such user", user)
-    else:
-        return return_message(True, "Successfully fetched user data", user)
+
+    database_helper.update_page_views(email)
+    active_user = database_helper.check_if_active_email(email)
+    if active_user != "NotActive":
+        socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
+    return return_message(True, "Successfully fetched user data", user)
+
 
 @app.route('/get_user_messages_by_token', methods =['GET'])
 def get_user_messages_by_token():
@@ -191,7 +199,12 @@ def post_message():
         return return_message(False, "ReceiverNotFound", None)
 
     database_helper.create_post(sender, email, message)
+    active_user = database_helper.check_if_active_email(email)
+    if active_user != "NotActive":
+        socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
+
     return return_message(True, "MessagePosted", None)
+
 
 def return_message (success, message, data):
     d = {

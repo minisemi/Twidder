@@ -230,8 +230,13 @@ function displayUserData(){
     xmlHttpRequest("GET", "get_user_data_by_token", null, "",callback)
 }
 
+function getSender(){
+
+}
+
 function postMessage(message, email, sender, messageBoard) {
     refreshMessages(email, messageBoard)
+    console.log("mejl: " + email)
     var form = new FormData()
     var message = document.getElementById(message).value
     var messageBoard = document.getElementById(messageBoard)
@@ -330,6 +335,7 @@ function searchForUser() {
       //  alert(serverMessage.message)
          }
     }
+
     var params = "email="+searchEmail
     xmlHttpRequest("GET", "get_user_data_by_email", null, params, callback)
 
@@ -368,12 +374,17 @@ function webSocket() {
     }
 
     connection.onmessage = function (message) {
-        if (message.data == 'logout'){
+        var jsonMessage = JSON.parse(message.data)
+        if (jsonMessage.message == 'logout'){
             sessionStorage.removeItem("token")
             sessionStorage.removeItem("email")
             displayView()
         }
-        console.log('WebSocketMessage ' + message.data);
+        if (jsonMessage.message == 'updateChart'){
+           console.log("JSON: " + jsonMessage.message)
+
+        }
+        console.log('WebSocketMessage ' + jsonMessage.message);
     }
 
 }
