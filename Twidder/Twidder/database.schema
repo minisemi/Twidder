@@ -8,8 +8,10 @@ CREATE TABLE Users(
    gender varchar(255) NOT NULL,
    city varchar(255) NOT NULL,
    country varchar(255) NOT NULL,
+   pageViews int NOT NULL,
    PRIMARY KEY( email )
 );
+
 
 INSERT INTO Users VALUES (
   "a.ulander@live.se",
@@ -18,7 +20,8 @@ INSERT INTO Users VALUES (
   "aaaaa",
   "male",
   "Uppsala",
-  "Sweden"
+  "Sweden",
+  0
 );
 
 INSERT INTO Users VALUES (
@@ -28,7 +31,8 @@ INSERT INTO Users VALUES (
   "aaaaa",
   "male",
   "Hufvudstaden",
-  "Sweden"
+  "Sweden",
+  0
 );
 
 DROP TABLE IF EXISTS Posts;
