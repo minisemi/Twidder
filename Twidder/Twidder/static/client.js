@@ -1,5 +1,4 @@
 
-
 window.onload = function () {
 
     displayView()
@@ -62,6 +61,74 @@ function login() {
     var form = new FormData(document.getElementById("login_form"))
     xmlHttpRequest("POST", "sign_in", form, "",callback)
 }
+
+function initializePieChart() {
+
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Posts on wall", "Wall visits", "Members online"],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio:false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.yLabel;
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateChart(data) {
+
+
+    var ctx = document.getElementById("myChart");
+    switch (data.chartType){
+        case "posts":
+            ctx.data.datasets[0].data[0] = data.chartValue;
+            break
+        case "visists":
+            ctx.data.datasets[0].data[1] = data.chartValue;
+            break
+        case "members":
+            ctx.data.datasets[0].data[2] = data.chartValue;
+            break
+        default:break
+
+    }
+
+}
+
 
 function signUp() {
 

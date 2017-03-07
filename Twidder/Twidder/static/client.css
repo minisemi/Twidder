@@ -2,6 +2,10 @@ body{
     background-color: cornflowerblue;
 }
 
+canvas{
+    margin: auto;
+}
+
 .topRow{
     margin-top: 50px;
 }
