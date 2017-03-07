@@ -176,7 +176,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="centered">
-                                <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('searchEmail').value, sessionStorage.email, 'searchmessageBoard');return false">Post</button>
+                                <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('displaySearchEmail').innerText, sessionStorage.email, 'searchmessageBoard');return false">Post</button>
                                 <button class="btn btn-lg btn-primary" onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
                             </div>
                         </div>

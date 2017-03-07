@@ -163,8 +163,13 @@ function displayUserData(){
     xmlHttpRequest("GET", "get_user_data_by_token", null, "",callback)
 }
 
+function getSender(){
+
+}
+
 function postMessage(message, email, sender, messageBoard) {
     refreshMessages(email, messageBoard)
+    console.log("mejl: " + email)
     var form = new FormData()
     var message = document.getElementById(message).value
     var messageBoard = document.getElementById(messageBoard)
