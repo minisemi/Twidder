@@ -28,8 +28,7 @@ def echo_socket(ws):
             except IOError:
                 print(IOError)
         socket_storage[email] = ws
-        for socket in socket_storage:
-            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+
 
 
 
@@ -65,6 +64,9 @@ def sign_in():
     if database_helper.check_password(password, email):
         token = str(uuid.uuid4().hex)
         database_helper.add_active_user(email, token)
+        for email, socket in socket_storage.items():
+            #print(socket_storage)
+            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
@@ -153,7 +155,7 @@ def get_user_data_by_email():#add param here
 
     database_helper.update_page_views(email)
     active_user = database_helper.check_if_active_email(email)
-    if active_user != "NotActive":
+    if active_user is not "NotActive":
         socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
     return return_message(True, "Successfully fetched user data", user)
 

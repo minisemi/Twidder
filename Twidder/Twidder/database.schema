@@ -69,12 +69,3 @@ CREATE TABLE ActiveUsers(
     FOREIGN KEY(user) REFERENCES Users(email)
 );
 
-INSERT INTO ActiveUsers VALUES (
-    "a.ulander@live.se",
-    "QWERTY1"
-);
-
-INSERT INTO ActiveUsers VALUES (
-    "matilda@gmail.com",
-    "QWERTY2"
-);

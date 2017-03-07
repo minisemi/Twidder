@@ -25,7 +25,7 @@ def get_posts_count(user):
     return query_db(query, [user], one=True)
 
 def get_views_count(user):
-    query = "SELECT pageViews FROM Users WHERE user=?"
+    query = "SELECT pageViews FROM Users WHERE email=?"
     return query_db(query, [user], one=True)
 
 def remove_active_user(user):
