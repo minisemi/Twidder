@@ -6,23 +6,36 @@ window.onload = function () {
 
 page('/', displayView);
 
-
 /*window.onbeforeunload = function(e){
     console.log(location.pathname)
     page(location.pathname, openTab("Home"));
     return "Are you sure you want to leave this page and sign out?"
 };*/
 
-
+/* Set index page url to '/'
+*  Start router
+*/
+page('/', displayView);
 page();
 
+/*
+* Function called when tab in frontend is clicked
+* Calls on page to route to correct URL,
+* Call on open tab
+* tabName: string for URL
+* tabID: String ID for each tab
+ */
 function callOnPage(tabName, tabID){
     page('/'+tabName, function(){
-  console.log("called on " + tabName)
         openTab(tabName, tabID)
 });
 }
 
+/*
+* Displays correct view
+* If token is undefined; new session -> log in page
+* If token is defined, go to tab stored in sessionStorage (last visited tab, handles refresh page-event)
+ */
 function displayView() {
 
     if (sessionStorage.token == undefined){
@@ -35,19 +48,27 @@ function displayView() {
     }
 }
 
-
+/*
+* Function called when user logs out
+* Clears sessionStorage as necessary, call display view (with undefined token)
+* and routs back to index page. Send http POST request to update server.
+ */
 function logout(){
-
     var callback = function () {
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("email")
         displayView()
         page('/')
-
     }
     xmlHttpRequest("POST", "sign_out", null, "",callback)
 }
 
+/*
+* Function called to log in.
+* Define callback function to update sessionStorage if server logs in user successfully,
+* or send error message if failed.
+* Sends data by form in http POST request to server.
+ */
 function login() {
     var error = document.getElementById("error")
     var callback = function (response) {
@@ -126,10 +147,14 @@ function updateChart(data) {
             break
         default:break
     }
-
 }
 
-
+/*
+* Function called when a user signs up.
+* First checks password repeat client side
+* Define callback function to alert user in error message about success/failure
+* Sends data by form in http POST request to server
+ */
 function signUp() {
 
     var proceed = true
@@ -157,6 +182,11 @@ function signUp() {
     }
 }
 
+/*
+* Called to upate sessionStorage in log in/out event, display view called.
+* token: unique login token for user (undefined if not logged in)
+* email: email to user (unique, works as user name)
+ */
 function updateSessionStorage(token, email){
     if (typeof(Storage) !== "undefined") {
         sessionStorage.setItem("token", token)
@@ -169,9 +199,17 @@ function updateSessionStorage(token, email){
     } else {
       //  alert("Browser doesn't support web storage")
     }
-
 }
 
+/*
+* Function called when a tab is opened,
+* called from onClick in HTML indirectly through callOnPage()
+* First closes all tabs by setting its style.display to none
+* And replaces classNames from active to "" to not make buttons look like they are pressed
+* Then shows correct tab (block) and sets this one to active (button pressed), stores tabID.
+* tabName: string for URL
+* tabID: String ID for each tab
+ */
 function openTab(tabName, tabID) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -187,12 +225,17 @@ function openTab(tabName, tabID) {
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
     sessionStorage.currentTab = tabID
-    //page('/' + tabName)
-    //window.location.pathname = tabName;
-    //window.history.pushState(tabName, tabName, tabName)
 
 }
 
+/*
+* Function called when user presses button Change password
+* First check client side if new password is repeated correctly,
+* Define callback function to display correct response to user.
+* Sends data by form in http POST request to server.
+* If new password is same as old, dont connect to server
+* just alert user.
+ */
 function changePassword() {
     var form = new FormData(document.getElementById("changePwForm"))
 
@@ -218,6 +261,10 @@ function changePassword() {
     }
 }
 
+/*
+* Define callback function to set all user info to data from server response.
+* Sends http GET request to get all data.
+ */
 function displayUserData(){
     var callback = function (response) {
         document.getElementById("userfirstname").innerHTML=response.data.firstName
@@ -230,20 +277,20 @@ function displayUserData(){
     xmlHttpRequest("GET", "get_user_data_by_token", null, "",callback)
 }
 
-function getSender(){
-
-}
-
+/*
+* Function called when user posts message on own or other users wall.
+* First refreshes messages displayed.
+* Defines callback function to call on loadMessage for specific message.
+* Sends all data by form in POST request to server by calling on xmlHttpRequest
+* with data and callback function
+*/
 function postMessage(message, email, sender, messageBoard) {
     refreshMessages(email, messageBoard)
-    console.log("mejl: " + email)
     var form = new FormData()
     var message = document.getElementById(message).value
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
         if (response.success){
-
-            console.log(sender)
             loadMessage(message, email, messageBoard, sender)
 
         }
@@ -252,9 +299,16 @@ function postMessage(message, email, sender, messageBoard) {
     form.append("message", message)
     form.append("email", email)
     form.append("sender", sender)
-    console.log(form.get("email"))
     xmlHttpRequest("POST", "post_message", form, "",callback)
 }
+
+/*
+* Callback function defined: Refreshes all messages by
+* first clearing messageBoard, then calls on loadMessage for each message retrieved from served
+* by http GET request with email as parameter.
+* email: email to receiver
+* messageBoard: message board to be refreshed
+ */
 function refreshMessages(email, messageBoard) {
     var messageBoard = document.getElementById(messageBoard)
     var callback = function (response) {
@@ -279,6 +333,10 @@ function refreshMessages(email, messageBoard) {
     xmlHttpRequest("GET", "get_user_messages_by_email", null, params,callback)
 }
 
+/*
+* Function to load a message and add it to the layout.
+* Message is contained in draggable div.
+ */
 function loadMessage(message, email, messageBoard, sender){
     var textArea = document.createElement("textarea")
     textArea.setAttribute("class", "messageBox")
@@ -296,13 +354,19 @@ function loadMessage(message, email, messageBoard, sender){
     messageBoard.insertBefore(messageDiv, messageBoard.firstChild)
 }
 
+/*
+* Function for allow drop on message board
+* preventing default action.
+ */
 function allowDrop(ev) {
     ev.preventDefault();
 }
 
+/*
+* Drag event stored target.id in data transfered in event
+ */
 function drag(ev) {
-    console.log("target" + ev.target.id)
-    ev.dataTransfer.setData("text", ev.target.id);
+    ev.dataTransfer.setData("text", ev.target.textContent);
 
 }
 
@@ -316,7 +380,6 @@ function drop(ev) {
 function searchForUser() {
 
     var error = document.getElementById("error")
-
     var searchEmail = document.getElementById("searchEmail").value
     var callback = function (response) {
         if (response.success == true) {
@@ -338,7 +401,6 @@ function searchForUser() {
 
     var params = "email="+searchEmail
     xmlHttpRequest("GET", "get_user_data_by_email", null, params, callback)
-
 }
 
 function xmlHttpRequest(method, url, data, params, callback){
@@ -383,9 +445,7 @@ function webSocket() {
         if (jsonMessage.message == 'updateChart'){
            console.log("JSON: " + jsonMessage.message)
                 updateChart(jsonMessage.data)
-
         }
         console.log('WebSocketMessage ' + jsonMessage.message);
     }
-
 }

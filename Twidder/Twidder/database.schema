@@ -12,7 +12,6 @@ CREATE TABLE Users(
    PRIMARY KEY( email )
 );
 
-
 INSERT INTO Users VALUES (
   "a.ulander@live.se",
   "Alexander",

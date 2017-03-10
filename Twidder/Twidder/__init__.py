@@ -71,6 +71,9 @@ def sign_in():
     if database_helper.check_password(password, email):
         token = str(uuid.uuid4().hex)
         database_helper.add_active_user(email, token)
+        for email, socket in socket_storage.items():
+            #print(socket_storage)
+            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
