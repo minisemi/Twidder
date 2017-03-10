@@ -1,10 +1,8 @@
-
+var myChart;
 window.onload = function () {
 
     displayView()
 }
-
-
 
 page('/', displayView);
 
@@ -28,10 +26,12 @@ function callOnPage(tabName, tabID){
 function displayView() {
 
     if (sessionStorage.token == undefined){
-         document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
+        document.getElementById("currentView").innerHTML = document.getElementById("welcome").innerHTML
     } else {
-         document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
-         document.getElementById(sessionStorage.currentTab).click();
+        document.getElementById("currentView").innerHTML= document.getElementById("profile").innerHTML
+        initializePieChart()
+        document.getElementById(sessionStorage.currentTab).click();
+        webSocket()
     }
 }
 
@@ -53,7 +53,7 @@ function login() {
     var callback = function (response) {
         if (response.success == true) {
             updateSessionStorage(response.data, document.getElementById("loginemail").value)
-            webSocket()
+            //webSocket()
         } else {
             error.innerHTML = response.message
         }
@@ -65,7 +65,7 @@ function login() {
 function initializePieChart() {
 
     var ctx = document.getElementById("myChart");
-    var myChart = new Chart(ctx, {
+    myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ["Posts on wall", "Wall visits", "Members online"],
@@ -111,20 +111,20 @@ function initializePieChart() {
 
 function updateChart(data) {
 
-
-    var ctx = document.getElementById("myChart");
     switch (data.chartType){
         case "posts":
-            ctx.data.datasets[0].data[0] = data.chartValue;
+            myChart.data.datasets[0].data[0] = data.chartValue['COUNT(message)'];
+            myChart.update()
             break
-        case "visists":
-            ctx.data.datasets[0].data[1] = data.chartValue;
+        case "visits":
+            myChart.data.datasets[0].data[1] = data.chartValue['pageViews'];
+            myChart.update()
             break
         case "members":
-            ctx.data.datasets[0].data[2] = data.chartValue;
+            myChart.data.datasets[0].data[2] = data.chartValue;
+            myChart.update()
             break
         default:break
-
     }
 
 }
@@ -382,6 +382,7 @@ function webSocket() {
         }
         if (jsonMessage.message == 'updateChart'){
            console.log("JSON: " + jsonMessage.message)
+                updateChart(jsonMessage.data)
 
         }
         console.log('WebSocketMessage ' + jsonMessage.message);

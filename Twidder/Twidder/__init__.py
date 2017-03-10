@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from geventwebsocket.handler import WebSocketHandler
+from geventwebsocket import WebSocketError
 from flask import Flask, request, render_template
 from gevent.pywsgi import WSGIServer
 from flask_sockets import Sockets
@@ -14,24 +15,32 @@ socket_storage = {}
 
 @sockets.route('/echo')
 def echo_socket(ws):
-    print(socket_storage)
     while True:
-        message = ws.receive()
-        email = database_helper.check_if_active(message)
-        #print(email + message)
+        try:
+            message = ws.receive()
+            email = database_helper.check_if_active(message)
+        except WebSocketError:
+            socket_storage.pop(email)
         if socket_storage.get(email):
             try:
-                print("remove from socket")
                 socket_storage[email].send(return_message(True, 'logout', None))
                 socket_storage.pop(email)
 
             except IOError:
                 print(IOError)
         socket_storage[email] = ws
-        for socket in socket_storage:
-            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+        try:
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits','chartValue': database_helper.get_views_count(email)}))
+        except WebSocketError:
+            socket_storage.pop(email)
 
-
+        if bool(socket_storage):
+            for mail, socket in socket_storage.items():
+                try:
+                    socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+                except WebSocketError:
+                    socket_storage.pop(mail)
 
 
 @app.route('/Home')
@@ -46,14 +55,11 @@ def browse():
 def account():
     return root()
 
-
 #@app.route('/', defaults={'path': ''})
 @app.route('/')#<path:path>')
 def root():
     return app.send_static_file('client.html')
     #return render_template('client.html')
-
-
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
@@ -95,8 +101,6 @@ def sign_up():
     database_helper.add_user(email, firstName, familyName, password, gender, city, country)
     return return_message(True, "Signed up", None)
 
-
-
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
     token = request.headers['token']
@@ -105,14 +109,14 @@ def sign_out():
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
     socket_storage.pop(user)
-    #if socket_storage.get(user):
-            #print('remove ' + user + token)
-            #try:
-                #socket_storage[user].send('logout')
-           # except IOError:
-                #print(IOError)
+    if bool(socket_storage):
+        for mail, socket in socket_storage.items():
+            try:
+                socket.send(
+                    return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+            except WebSocketError:
+                socket_storage.pop(mail)
     return return_message(True, "Signed out", None)
-
 
 @app.route('/change_password', methods=['POST'])#put token in header instead
 def change_password():
@@ -154,9 +158,11 @@ def get_user_data_by_email():#add param here
     database_helper.update_page_views(email)
     active_user = database_helper.check_if_active_email(email)
     if active_user != "NotActive":
-        socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
+        try:
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
+        except WebSocketError:
+            socket_storage.pop(email)
     return return_message(True, "Successfully fetched user data", user)
-
 
 @app.route('/get_user_messages_by_token', methods =['GET'])
 def get_user_messages_by_token():
@@ -201,10 +207,11 @@ def post_message():
     database_helper.create_post(sender, email, message)
     active_user = database_helper.check_if_active_email(email)
     if active_user != "NotActive":
-        socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
-
+        try:
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
+        except WebSocketError:
+            socket_storage.pop(email)
     return return_message(True, "MessagePosted", None)
-
 
 def return_message (success, message, data):
     d = {

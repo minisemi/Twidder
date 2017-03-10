@@ -46,20 +46,6 @@ CREATE TABLE Posts(
     FOREIGN KEY (receiver, sender) REFERENCES Users(email, email)
 );
 
-INSERT INTO Posts VALUES (
-  "a.ulander@live.se",
-  "matilda@gmail.com",
-  "Fan vad cool du e, hur blir jag lika cool som du",
-  "1"
-);
-
-INSERT INTO Posts VALUES (
-  "a.ulander@live.se",
-  "a.ulander@live.se",
-  "Fan vad cool ja e azz",
-  "2"
-);
-
 DROP TABLE IF EXISTS ActiveUsers;
 
 CREATE TABLE ActiveUsers(
@@ -67,14 +53,4 @@ CREATE TABLE ActiveUsers(
     token varchar(255) UNIQUE,
     PRIMARY KEY(user),
     FOREIGN KEY(user) REFERENCES Users(email)
-);
-
-INSERT INTO ActiveUsers VALUES (
-    "a.ulander@live.se",
-    "QWERTY1"
-);
-
-INSERT INTO ActiveUsers VALUES (
-    "matilda@gmail.com",
-    "QWERTY2"
 );

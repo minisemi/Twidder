@@ -71,7 +71,7 @@
             <div class="row">
                 <div class="col-xs-0 hidden-xs col-sm-12 col-md-12 col-lg-12">
                     <ul class="tab">
-                        <li><a href="Home" id="homeTab" class="tablinks" onclick="callOnPage('Home','homeTab');displayUserData();refreshMessages(sessionStorage.email,'messageBoard');initializePieChart()">Home</a></li>
+                        <li><a href="Home" id="homeTab" class="tablinks" onclick="callOnPage('Home','homeTab');displayUserData();refreshMessages(sessionStorage.email,'messageBoard')">Home</a></li>
                         <li><a href="Browse" id="browseTab" class="tablinks" onclick="callOnPage('Browse','browseTab')">Browse</a></li>
                         <li><a href="Account" id="accountTab" class="tablinks" onclick="callOnPage('Account','accountTab')">Account</a></li>
                     </ul>
@@ -92,6 +92,11 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <canvas id="myChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
         </div>
 
         <div id="Home" class="tabcontent"  >
@@ -99,11 +104,6 @@
                 <div class="row topRow">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <h3 class="centered">Home</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <canvas id="myChart" width="400" height="200"></canvas>
                     </div>
                 </div>
                 <div class="row">
