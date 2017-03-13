@@ -23,6 +23,9 @@ class test_suite (unittest.TestCase):
         except NoSuchElementException:
             print('Timed out')
 
+    '''
+    Test: Log in with wrong email and pw, then correct.
+    '''
     def test_log_in(self):
         driver = self.driver
         email = driver.find_element_by_xpath('//*[@id="loginemail"]')
@@ -44,7 +47,9 @@ class test_suite (unittest.TestCase):
         self.log_in_help(driver, email_string, pw_string)
 
 
-
+    '''
+    Test: Post on users own profile.
+    '''
     def test_post_on_profile(self):
         driver = self.driver
         email_string = "matilda@gmail.com"
@@ -54,7 +59,9 @@ class test_suite (unittest.TestCase):
         message = "Hi this is me"
         self.post_help(driver, message, text_area, '//*[@id="Home"]/div/div[3]/div/div/button[1]')
 
-
+    '''
+    Test: Search for other user and post on other users profile.
+    '''
     def test_post_to_others(self):
         driver = self.driver
         email_string = "matilda@gmail.com"
@@ -83,6 +90,9 @@ class test_suite (unittest.TestCase):
         text_area = driver.find_element_by_xpath('//*[@id="searchmessage"]')
         self.post_help(driver, message, text_area, '//*[@id="searchResults"]/div[2]/div/div/button[1]')
 
+    '''
+    Test: Sign up, first with blank form, then existing user, then invalid pw.
+    '''
     def test_sign_up(self):
         driver = self.driver
         email_string = 'a@a'
@@ -114,7 +124,9 @@ class test_suite (unittest.TestCase):
 
         self.log_in_help(driver, email_string, pw_string)
 
-
+    '''
+    Test: Try to change password with wrong pw, then invalid new pw, then correct.
+    '''
     def test_change_password(self):
         driver = self.driver
         email_string = 'matilda@gmail.com'
@@ -151,7 +163,6 @@ class test_suite (unittest.TestCase):
             WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="passwordText"]')))
         finally:
-            print('text: ' + driver.find_element_by_xpath('//*[@id="passwordText"]').text)
             assert 'Repeat password failed' in driver.find_element_by_xpath('//*[@id="passwordText"]').text
 
         new_pw2.clear()
@@ -188,7 +199,9 @@ class test_suite (unittest.TestCase):
         new_pw2.send_keys('aaaaa')
         driver.find_element_by_xpath('//*[@id="changePwForm"]/div[4]/div/div/input').click()
 
-
+    '''
+    Help function signing up already existing user (email).
+    '''
     def try_dupe(self, driver, email, button):
         email.send_keys('matilda@gmail.com')
         button.click()
@@ -199,7 +212,9 @@ class test_suite (unittest.TestCase):
         finally:
             element = self.verify_error(driver)
             assert 'already exists' in element.text
-
+    '''
+    Help function to try if blank form can be signed up.
+    '''
     def try_blank_form(self, driver, button):
         button.click()
         try:
@@ -210,6 +225,9 @@ class test_suite (unittest.TestCase):
             element = self.verify_error(driver)
             assert element.text != 'Signed up'
 
+    '''
+    Help function to verify that error message is displayed.
+    '''
     def verify_error(self, driver):
         try:
             element = driver.find_element_by_xpath('//*[@id="error"]')
@@ -219,6 +237,9 @@ class test_suite (unittest.TestCase):
         assert element is not None
         return element
 
+    '''
+    Help function to try to change with wrong pw.
+    '''
     def try_wrong_password(self, driver, password, repeat, button, email):
         repeat.send_keys('wrongpwd')
         button.click()
@@ -230,6 +251,9 @@ class test_suite (unittest.TestCase):
             element = self.verify_error(driver)
             assert 'password failed' in element.text
 
+    '''
+    Help function to post a message to wall.
+    '''
     def post_help(self, driver, message, text_area, tab):
         text_area.send_keys(message)
         post_button = driver.find_element_by_xpath(tab)
@@ -243,6 +267,9 @@ class test_suite (unittest.TestCase):
             assert message in driver.find_element_by_xpath('//*[@id="' + message + '"]/textarea').text
 
 
+    '''
+    Help function to log in before tests.
+    '''
     def log_in_help(self, driver, email_string, pw_string):
         email = driver.find_element_by_xpath('//*[@id="loginemail"]')
         pw = driver.find_element_by_xpath('//*[@id="loginpassword"]')

@@ -13,6 +13,13 @@ app = Flask(__name__, static_url_path='')
 sockets = Sockets(app)
 socket_storage = {}
 
+
+'''
+Function reached when websocket is opened from client.
+Each socket is stored in dict with user email, when duplicate email appears, oldest socket connection is closed
+and popped from dict, resulting in this session being logged out.
+Also sends message to client about chart data update, and sends number of members to ALL clients when new is logged in.
+'''
 @sockets.route('/echo')
 def echo_socket(ws):
     while True:
@@ -31,7 +38,7 @@ def echo_socket(ws):
         socket_storage[email] = ws
         try:
             socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
-            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits','chartValue': database_helper.get_views_count(email)}))
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
         except WebSocketError:
             socket_storage.pop(email)
 
@@ -42,7 +49,9 @@ def echo_socket(ws):
                 except WebSocketError:
                     socket_storage.pop(mail)
 
-
+'''
+routes to enable refresh of tab page.
+'''
 @app.route('/Home')
 def home():
     return root()
@@ -55,12 +64,19 @@ def browse():
 def account():
     return root()
 
-#@app.route('/', defaults={'path': ''})
+'''
+Route to index page.
+Returns static file to be displayed, html.
+'''
 @app.route('/')#<path:path>')
 def root():
     return app.send_static_file('client.html')
-    #return render_template('client.html')
 
+'''
+Route called when sign in is done.
+Check if user exists, check password. If all is correct, update home page chart
+and log in user.
+'''
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     email = request.form['email']
@@ -77,6 +93,10 @@ def sign_in():
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
+'''
+Called to sign up user, checks i fields are valid,
+if so adds user and returns success message.
+'''
 @app.route('/sign_up', methods=['POST'])#/api/sign...
 def sign_up():
     email = request.form['email']
@@ -104,6 +124,11 @@ def sign_up():
     database_helper.add_user(email, firstName, familyName, password, gender, city, country)
     return return_message(True, "Signed up", None)
 
+
+'''
+Method to sign out user, checks for token to see if session is active,
+updates charts to all other active users.
+'''
 @app.route('/sign_out', methods=['POST'])
 def sign_out():
     token = request.headers['token']
@@ -121,6 +146,10 @@ def sign_out():
                 socket_storage.pop(mail)
     return return_message(True, "Signed out", None)
 
+'''
+Checks if user is active, if password is correct and validity of new pw.
+'''
+
 @app.route('/change_password', methods=['POST'])#put token in header instead
 def change_password():
     token = request.headers['token']
@@ -133,11 +162,12 @@ def change_password():
         return return_message(False, "Wrong password", user)
     if len(new_password) < 5 or new_password == old_password:
         return return_message(False, "Invalid new password", None)
-            #Last parameter left out, insert null if not working
-
     database_helper.update_password(new_password, user)
     return return_message(True, "Successfully changed password", None)
 
+'''
+Fetches user data from token of session, checks if active and if so returns all user data.
+'''
 @app.route('/get_user_data_by_token', methods =['GET'])
 def get_user_data_by_token():
     token = request.headers['token']
@@ -147,6 +177,10 @@ def get_user_data_by_token():
     else:
         return return_message(True, "Successfully fetched user data", database_helper.find_user(user))
 
+'''
+Fetches user data from email of other user, checks if user requesting data is active and if so returns all user data.
+Updates chart of other user as pageviews is increased.
+'''
 @app.route('/get_user_data_by_email', methods =['GET'])
 def get_user_data_by_email():#add param here
     token = request.headers['token']
@@ -167,6 +201,10 @@ def get_user_data_by_email():#add param here
             socket_storage.pop(email)
     return return_message(True, "Successfully fetched user data", user)
 
+
+'''
+Fetches user messages from session token, checks if user requesting data is active and if so returns all messages on wall
+'''
 @app.route('/get_user_messages_by_token', methods =['GET'])
 def get_user_messages_by_token():
     token = request.headers['token']
@@ -176,6 +214,10 @@ def get_user_messages_by_token():
     else:
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(user))
 
+'''
+Fetches user messages from email of other user, checks if user requesting data is active and if so returns all messages
+on other users wall.
+'''
 @app.route('/get_user_messages_by_email', methods =['GET'])
 def get_user_messages_by_email():
     token = request.headers['token']
@@ -194,6 +236,10 @@ def get_user_messages_by_email():
     else:
         return return_message(True, "Successfully fetched user messages", database_helper.get_posts(email))
 
+'''
+Checks if user posting is active, checks if receiver is a user. If true, update chart of user posted to and
+send info to database.
+'''
 @app.route('/post_message', methods =['POST'])
 def post_message():
     token = request.headers['token']
@@ -216,6 +262,9 @@ def post_message():
             socket_storage.pop(email)
     return return_message(True, "MessagePosted", None)
 
+'''
+defining how return message is returned
+'''
 def return_message (success, message, data):
     d = {
         'success': success,

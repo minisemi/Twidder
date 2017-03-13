@@ -363,13 +363,16 @@ function allowDrop(ev) {
 }
 
 /*
-* Drag event stored target.id in data transfered in event
+* Drag event stored target.id in data transferred in event, get text
  */
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.textContent);
 
 }
 
+/*
+* sets target of drop event's text to drag event stored data
+ */
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text")
@@ -377,6 +380,11 @@ function drop(ev) {
 
 }
 
+/*
+* Function that searches for user
+* Callback function defined to display all user data if response is successful.
+* Sends http GET request with data in form an callback function
+ */
 function searchForUser() {
 
     var error = document.getElementById("error")
@@ -403,6 +411,14 @@ function searchForUser() {
     xmlHttpRequest("GET", "get_user_data_by_email", null, params, callback)
 }
 
+/*
+* Function called to create http request and send to server.
+* method:  Kind of request, GET, POST etc.
+* url: url corresponding on server side
+* data: data to be sent in form(null if no data needed)
+* params: params to be included, for example email.
+* callback: function to be executed upon response.
+ */
 function xmlHttpRequest(method, url, data, params, callback){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -423,6 +439,11 @@ function xmlHttpRequest(method, url, data, params, callback){
         xhttp.send(data);
 }
 
+/*
+* Function to initiate websocket connection.
+* Sends token to server when user logs in.
+* Reads data sent from server when mesage is sent about chart update.
+ */
 function webSocket() {
     var connection = new WebSocket('ws://localhost:7000/echo');
 
