@@ -24,6 +24,11 @@ def get_posts_count(user):
     query = "SELECT COUNT(message) FROM Posts WHERE receiver=?"
     return query_db(query, [user], one=True)
 
+def get_post_to_others_count(user):
+    query = "SELECT COUNT(message) FROM Posts WHERE sender=? AND receiver!=?"
+    return query_db(query, [user, user], one=True)
+
+
 def get_views_count(user):
     query = "SELECT pageViews FROM Users WHERE email=?"
     return query_db(query, [user], one=True)

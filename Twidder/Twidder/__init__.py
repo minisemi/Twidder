@@ -39,15 +39,16 @@ def echo_socket(ws):
         try:
             socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'posts', 'chartValue': database_helper.get_posts_count(email)}))
             socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'visits', 'chartValue': database_helper.get_views_count(email)}))
+            socket_storage[email].send(return_message(True, 'updateChart', {'chartType': 'postsToOthers', 'chartValue': database_helper.get_post_to_others_count(email)}))
         except WebSocketError:
             socket_storage.pop(email)
 
-        if bool(socket_storage):
+        '''if bool(socket_storage):
             for mail, socket in socket_storage.items():
                 try:
-                    socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+                    socket.send(return_message(True, 'updateChart', {'chartType': 'postsToOthers', 'chartValue': len(socket_storage)}))
                 except WebSocketError:
-                    socket_storage.pop(mail)
+                    socket_storage.pop(mail)'''
 
 '''
 routes to enable refresh of tab page.
@@ -87,9 +88,8 @@ def sign_in():
     if database_helper.check_password(password, email):
         token = str(uuid.uuid4().hex)
         database_helper.add_active_user(email, token)
-        for email, socket in socket_storage.items():
-            #print(socket_storage)
-            socket.send(return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
+        #for email, socket in socket_storage.items():
+            #socket.send(return_message(True, 'updateChart', {'chartType': 'postsToOthers', 'chartValue': len(socket_storage)}))
         return return_message(True, "Signed in", token)
     return return_message(False, "Wrong password", None)
 
@@ -137,13 +137,13 @@ def sign_out():
         return return_message(False, "User not found", None)
     database_helper.remove_active_user(user)
     socket_storage.pop(user)
-    if bool(socket_storage):
+    '''if bool(socket_storage):
         for mail, socket in socket_storage.items():
             try:
                 socket.send(
                     return_message(True, 'updateChart', {'chartType': 'members', 'chartValue': len(socket_storage)}))
             except WebSocketError:
-                socket_storage.pop(mail)
+                socket_storage.pop(mail)'''
     return return_message(True, "Signed out", None)
 
 '''
@@ -254,6 +254,7 @@ def post_message():
         return return_message(False, "ReceiverNotFound", None)
 
     database_helper.create_post(sender, email, message)
+    socket_storage[sender].send(return_message(True, 'updateChart', {'chartType': 'postsToOthers', 'chartValue': database_helper.get_post_to_others_count(sender)}))
     active_user = database_helper.check_if_active_email(email)
     if active_user != "NotActive":
         try:
