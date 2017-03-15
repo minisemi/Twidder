@@ -1,9 +1,7 @@
 var myChart;
 window.onload = function () {
-
     displayView()
 }
-
 
 /* Set index page url to '/'
 *  Start router
@@ -85,7 +83,7 @@ function initializePieChart() {
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ["Posts on wall", "Wall visits", "Members online"],
+            labels: ["Posts on wall", "Wall visits", "Posts to others"],
             datasets: [{
                 data: [0, 0, 0],
                 backgroundColor: [
@@ -142,8 +140,8 @@ function updateChart(data) {
             myChart.data.datasets[0].data[1] = data.chartValue['pageViews'];
             myChart.update()
             break
-        case "members":
-            myChart.data.datasets[0].data[2] = data.chartValue;
+        case "postsToOthers":
+            myChart.data.datasets[0].data[2] = data.chartValue['COUNT(message)'];
             myChart.update()
             break
         default:break
@@ -316,7 +314,7 @@ function refreshMessages(email, messageBoard) {
             }
 
             for (var i = 0; i < response.data.length; i++) {
-                console.log(response.data)
+
                 var message = response.data[i].message
                 var sender = response.data[i].sender
                 loadMessage(message, email, messageBoard, sender)
@@ -363,7 +361,11 @@ function allowDrop(ev) {
 * Drag event stored target.id in data transferred in event, get text
  */
 function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.textContent);
+    var stringList = ev.target.textContent.split('\n')
+    var sender = stringList[0].slice(0,-2)
+    stringList.splice(0,1)
+    ev.dataTransfer.setData("element", stringList.join('\n'));
+    ev.dataTransfer.setData("sender", sender)
 
 }
 
@@ -372,8 +374,8 @@ function drag(ev) {
  */
 function drop(ev) {
     ev.preventDefault();
-    var data = ev.dataTransfer.getData("text")
-    document.getElementById(ev.target.id).value = data
+    var data = ev.dataTransfer.getData("element")
+    document.getElementById(ev.target.id).value = '"' + data + '"\nRepost from ' + ev.dataTransfer.getData("sender")
 
 }
 
