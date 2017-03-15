@@ -6,16 +6,9 @@ window.onload = function () {
 
 page('/', displayView);
 
-/*window.onbeforeunload = function(e){
-    console.log(location.pathname)
-    page(location.pathname, openTab("Home"));
-    return "Are you sure you want to leave this page and sign out?"
-};*/
-
 /* Set index page url to '/'
 *  Start router
 */
-page('/', displayView);
 page();
 
 /*
@@ -83,6 +76,9 @@ function login() {
     xmlHttpRequest("POST", "sign_in", form, "",callback)
 }
 
+/*
+* Function called to initialize the chart.
+ */
 function initializePieChart() {
 
     var ctx = document.getElementById("myChart");
@@ -129,6 +125,11 @@ function initializePieChart() {
         }
     });
 }
+
+/*
+* Function called to update the chart.
+* Depending on which of the three charts the server wants to update, the corresponding chart is updated.
+ */
 
 function updateChart(data) {
 
@@ -211,6 +212,7 @@ function updateSessionStorage(token, email){
 * tabID: String ID for each tab
  */
 function openTab(tabName, tabID) {
+    sessionStorage.currentTab = tabID
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
 
@@ -223,9 +225,7 @@ function openTab(tabName, tabID) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
     document.getElementById(tabName).style.display = "block";
-    event.currentTarget.className += " active";
-    sessionStorage.currentTab = tabID
-
+    document.getElementById(tabID).className += " active";
 }
 
 /*

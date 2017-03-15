@@ -92,22 +92,24 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+        </div>
+
+        <div class="container">
+                <div class="row topRow">
+                    <div class="col-xs-10 col-xs-offset-2 col-sm-10 col-xs-offset-2 col-md-4 col-md-offset-2">
                         <canvas id="myChart" width="400" height="200"></canvas>
                     </div>
-                </div>
-        </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 ">
 
         <div id="Home" class="tabcontent"  >
             <div class="container">
-                <div class="row topRow">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <h3 class="centered">Home</h3>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-3 col-xs-offset-1 col-sm-3 col-sm-offset-1 col-md-3 col-md-offset-1">
+                    <div class="col-xs-3 col-xs-offset-1 col-sm-3 col-sm-offset-1 col-md-1">
                         <div class=userDataBox>
                             <div class="form">First name: <p id="userfirstname" ></p></div>
                             <div class="form">Family name: <p id=userfamilyname></p></div>
@@ -117,14 +119,14 @@
                             <div class="form">Email: <p id=useremail ></p></div>
                         </div>
                     </div>
-                    <div class="col-xs-3 col-sm-3 col-md-3">
+                    <div class="col-xs-3 col-sm-3 col-md-4">
                         <textarea rows="8" cols="50" ondrop="drop(event)" ondragover="allowDrop(event)" id=message ></textarea>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-md-offset-2">
                         <div class="centered">
                             <button class="btn btn-lg btn-primary" onclick="postMessage('message',sessionStorage.email,sessionStorage.email, 'messageBoard');return false">Post</button>
                             <button class="btn btn-lg btn-primary" onclick="refreshMessages(sessionStorage.email,'messageBoard');return false">Refresh</button>
@@ -133,7 +135,7 @@
                 </div>
 
                 <div class="row topRow">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-md-offset-2">
                         <div class = messageBoard>
                             <ul class="verticalList" id=messageBoard>
                             </ul>
@@ -145,13 +147,13 @@
 
         <div id="Browse" class="tabcontent">
             <div class="container">
-                <div class="row topRow">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <h3 class="centered">Browse</h3>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <div class = "searchBox centered">
                             <form id=searchForm>
                                 <input type=email id=searchEmail required float=left></input>
@@ -163,7 +165,7 @@
 
                 <div id=searchResults style="visibility:hidden">
                     <div class="row">
-                        <div class="col-xs-3 col-xs-offset-1 col-sm-3 col-sm-offset-1 col-md-3 col-md-offset-1">
+                        <div class="col-xs-3 col-xs-offset-1 col-sm-3 col-sm-offset-1 col-md-1">
                             <div class=userDataBox>
                                 <div class="form">First name: <p id="searchfirstname" ></p></div>
                                 <div class="form">Family name: <p id=searchfamilyname></p></div>
@@ -173,14 +175,14 @@
                                 <div class="form">Email: <p id="displaySearchEmail"></p></div>
                             </div>
                         </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="col-xs-3 col-sm-3 col-md-4">
                             <textarea rows="10" cols="50" id=searchmessage ></textarea>
                         </div>
                         <div class="col-xs-1 col-sm-1 col-md-1">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-2 col-md-offset-2">
                             <div class="centered">
                                 <button class="btn btn-lg btn-primary" onclick="postMessage('searchmessage', document.getElementById('displaySearchEmail').innerText, sessionStorage.email, 'searchmessageBoard');return false">Post</button>
                                 <button class="btn btn-lg btn-primary" onclick="refreshMessages(document.getElementById('searchEmail').value, 'searchmessageBoard');return false">Refresh</button>
@@ -188,7 +190,7 @@
                         </div>
                     </div>
                     <div class="row topRow">
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-2 col-md-offset-2">
                             <div class = messageBoard>
                                 <ul id=searchmessageBoard>
                                 </ul>
@@ -201,29 +203,29 @@
 
         <div id="Account" class="tabcontent">
             <div class="container">
-                <div class="row topRow">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <h3 class="centered">Account</h3>
                     </div>
                 </div>
                 <form id="changePwForm" onsubmit="changePassword();return false">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                             <div class="form centered">Old pw<input type="password" name="old_password" id="changePasswordOld" minLength=5 required></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <div class="form centered">New pw<input type="password" name="new_password" id="changePasswordNew1" minLength=5 required></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
                         <div class="form centered">Repeat new pw<input type="password" name="repeat_new_password" id="changePasswordNew2" minLength=5 required></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-md-offset-2">
 
                         <div class=centered>
                             <input class="btn btn-lg btn-primary" type="submit" value="Change pw">
@@ -234,6 +236,10 @@
                 </form>
                 <p id=passwordText></p>
             </div>
+        </div>
+                    </div>
+
+                </div>
         </div>
         </script>
 </head>
