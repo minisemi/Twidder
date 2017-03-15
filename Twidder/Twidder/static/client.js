@@ -4,11 +4,11 @@ window.onload = function () {
     displayView()
 }
 
-page('/', displayView);
 
 /* Set index page url to '/'
 *  Start router
 */
+page('/');
 page();
 
 /*
@@ -193,9 +193,6 @@ function updateSessionStorage(token, email){
         sessionStorage.setItem("token", token)
         sessionStorage.setItem("email", email)
         sessionStorage.setItem("currentTab", "homeTab")
-        //webSocket().open()
-        //call for websocket connection
-
         displayView()
     } else {
       //  alert("Browser doesn't support web storage")
